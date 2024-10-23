@@ -1,0 +1,48 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.custom-title {
+	font-family: "Cairo";
+	background-image: url('/main_text.webp');
+	background-size: cover;
+	background-clip: text;
+	-webkit-background-clip: text;
+	color: transparent;
+	text-transform: uppercase;
+	display: inline-block;
+	line-height: 1.2;
+}
+
+@media (min-width: 768px) {
+	.custom-title {
+		display: none;
+	}
+}
+
+@keyframes borderColorChange {
+	0% {
+		border-top-color: purple;
+		border-bottom-color: purple;
+		border-left-color: red;
+		border-right-color: red;
+	}
+
+	50% {
+		border-top-color: blue;
+		border-bottom-color: blue;
+		border-left-color: green;
+		border-right-color: green;
+	}
+
+	100% {
+		border-top-color: purple;
+		border-bottom-color: purple;
+		border-left-color: red;
+		border-right-color: red;
+	}
+}
+
+.animated-border {
+	animation: borderColorChange 3s infinite alternate;
+}
