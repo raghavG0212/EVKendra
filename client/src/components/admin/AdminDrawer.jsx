@@ -7,7 +7,7 @@ import {
   Drawer,
 } from "flowbite-react";
 import { HiChartPie } from "react-icons/hi";
-import { FaArrowRight, FaPerson } from "react-icons/fa6";
+import { FaPerson } from "react-icons/fa6";
 import { GiVote } from "react-icons/gi";
 import { CiCircleList } from "react-icons/ci";
 import { logout } from "../../redux/authSlice";
@@ -15,7 +15,7 @@ import { useDispatch } from "react-redux";
 import { useLocation, Link, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { IoCreateSharp } from "react-icons/io5";
+import { IoCreateSharp, IoExitOutline } from "react-icons/io5";
 import { toast } from "react-toastify";
 import Loader from "../Loader";
 
@@ -165,7 +165,7 @@ export default function AdminDrawer({ isOpen, setIsOpen }) {
               </Sidebar.Item>
               <Sidebar.Item
                 onClick={handleLogout}
-                icon={FaArrowRight}
+                icon={IoExitOutline}
                 className="hover:text-blue-500 cursor-pointer dark:hover:text-blue-500 mb-20"
               >
                 Logout

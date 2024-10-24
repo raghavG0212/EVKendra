@@ -1,5 +1,5 @@
 import { Sidebar } from "flowbite-react";
-import { FaArrowRight, FaPerson } from "react-icons/fa6";
+import { FaPerson } from "react-icons/fa6";
 import { useLocation, Link, useNavigate } from "react-router-dom";
 import { logout } from "../../redux/authSlice";
 import { useDispatch } from "react-redux";
@@ -9,6 +9,7 @@ import { toast } from "react-toastify";
 import Loader from "../Loader";
 import { clearVoteStatus } from "../../redux/voterSlice";
 import { GiVote } from "react-icons/gi";
+import { IoExitOutline } from "react-icons/io5";
 
 export default function VoterSideBar() {
   const location = useLocation();
@@ -104,7 +105,7 @@ export default function VoterSideBar() {
           <Sidebar.ItemGroup>
             <Sidebar.Item
               onClick={handleLogout}
-              icon={FaArrowRight}
+              icon={IoExitOutline}
               className="cursor-pointer"
             >
               Logout

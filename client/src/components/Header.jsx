@@ -5,10 +5,12 @@ import { FaMoon } from "react-icons/fa";
 import { GoSun } from "react-icons/go";
 import { useSelector, useDispatch } from "react-redux";
 import { toggleTheme } from "../redux/themeSlice";
-import {logout} from "../redux/authSlice";
+import { logout } from "../redux/authSlice";
 import { clearVoteStatus } from "../redux/voterSlice";
 import { toast } from "react-toastify";
 import { MdHowToVote } from "react-icons/md";
+import { IoExitOutline } from "react-icons/io5";
+import { FaPerson } from "react-icons/fa6";
 
 export default function Header() {
   const location = useLocation();
@@ -17,26 +19,26 @@ export default function Header() {
   const isAdmin = useSelector((state) => state.auth.isAdmin);
   const { theme } = useSelector((state) => state.theme);
   const isLoginPage = location.pathname === "/login";
-  const dispatch= useDispatch();
+  const dispatch = useDispatch();
 
   const handleScrollToFAQs = (e) => {
     e.preventDefault();
-    navigate("/"); 
+    navigate("/");
 
     setTimeout(() => {
       const element = document.getElementById("faqs");
       if (element) {
         element.scrollIntoView({ behavior: "smooth" });
       }
-    }, 100); 
+    }, 100);
   };
 
-  const handleLogout=()=>{
+  const handleLogout = () => {
     dispatch(logout());
     toast.success("You logged out sucessfully");
     !isAdmin && dispatch(clearVoteStatus());
-    navigate('/');
-  }
+    navigate("/");
+  };
 
   return (
     <Navbar className="border-b-8 p-4 border-teal-500 dark:border-teal-600 bg-slate-200">
@@ -86,7 +88,6 @@ export default function Header() {
       <div className="flex space-x-2">
         {currentUser != null ? (
           <Dropdown
-            className=""
             arrowIcon={false}
             inline
             label={
@@ -101,30 +102,40 @@ export default function Header() {
               </div>
             }
           >
-            <Dropdown.Header>
-              {" "}
-              <span className="block text-sm capitalize">
-                {isAdmin ? "Hey Admin!" : `Every vote counts!`}
-              </span>
-              <span className="block truncate text-sm font-medium">
-                {currentUser.name}
-              </span>
+            <Dropdown.Header className="flex flex-col items-center m-2">
+              <img src="/icon.webp" width="130px" />
+              <h1 className="text-[22px] capitalize text-slate-900 dark:text-white">
+                {currentUser.name}{" "}
+              </h1>
+              <p className="text-slate-500 dark:text-slate-300 text-[15px] mt-1">
+                {isAdmin ? "Hey Admin !" : "Every Vote Counts"}{" "}
+              </p>
             </Dropdown.Header>
             <Dropdown.Divider />
-            <Dropdown.Item>
-              <Link to={isAdmin ? "/admin-profile" : "voter-profile"}>
-                Your Profile
-              </Link>
+            <Dropdown.Item
+              as={Link}
+              to={isAdmin ? "/admin-profile" : "voter-profile"}
+              icon={FaPerson}
+              className="text-[16px] p-6"
+            >
+              Manage Your Profile
             </Dropdown.Item>
             <Dropdown.Divider />
             <Dropdown.Item
+              icon={theme === "dark" ? GoSun : FaMoon}
               onClick={() => dispatch(toggleTheme())}
-              className="sm:hidden"
+              className="sm:hidden p-6 text-[16px]"
             >
               {theme === "light" ? "Dark Mode" : "Light Mode"}
             </Dropdown.Item>
             <Dropdown.Divider />
-            <Dropdown.Item onClick={handleLogout}>Logout</Dropdown.Item>
+            <Dropdown.Item
+              onClick={handleLogout}
+              icon={IoExitOutline}
+              className="p-6 text-[16px]"
+            >
+              Logout
+            </Dropdown.Item>
           </Dropdown>
         ) : (
           <Link to={isLoginPage ? "/sign-up" : "/login"}>
