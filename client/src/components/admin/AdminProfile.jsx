@@ -5,8 +5,6 @@ import { useState } from "react";
 import { setCurrentUser } from "../../redux/authSlice";
 import { toast } from "react-toastify";
 import { AiFillEyeInvisible, AiFillEye } from "react-icons/ai";
-import AdminDrawer from "./AdminDrawer";
-import { IoList } from "react-icons/io5";
 
 export default function AdminProfile() {
   const currentUser = useSelector((state) => state.auth.currentUser);
@@ -16,7 +14,6 @@ export default function AdminProfile() {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(true);
   const [editDetails, setEditDetails] = useState(false);
-  const [isOpen, setIsOpen] = useState(false);
 
   const handleUpdate = async (e) => {
     e.preventDefault();
@@ -49,17 +46,9 @@ export default function AdminProfile() {
     }
   };
   return (
-    <div className="flex min-h-screen">
-      <AdminSidebar className="h-full" />
-      <AdminDrawer isOpen={isOpen} setIsOpen={setIsOpen} />
-      <div className="flex-grow md:mx-16 cursor-default">
-        <div className="flex items-center space-x-2 p-4 mt-1 bg-slate-300 dark:bg-slate-700 md:hidden mb-10">
-          <IoList
-            className="text-4xl cursor-pointer hover:text-blue-600 transition duration-150 ease-in-out "
-            onClick={() => setIsOpen(true)}
-          />
-          <h1 className="text-2xl">Options</h1>
-        </div>
+    <div className="flex flex-col md:flex-row min-h-screen">
+      <AdminSidebar className="h-full md:w-60" />
+      <div className="flex-grow  cursor-default">
         <div className="flex flex-col items-center p-3 shadow m-6 sm:m-12 border dark:border-blue-950 rounded-lg">
           <h1 className="text-center uppercase font-semibold text-4xl mt-10">
             Your profile

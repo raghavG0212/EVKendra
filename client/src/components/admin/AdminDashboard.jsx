@@ -6,8 +6,18 @@ import {
   Spinner,
   Label,
   TextInput,
-  Tooltip,
 } from "flowbite-react";
+import {
+  Chart as ChartJS,
+  ArcElement,
+  Tooltip,
+  Legend,
+  LineElement,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+} from "chart.js";
+import { Line } from "react-chartjs-2";
 import axios from "axios";
 import AdminSidebar from "./AdminSidebar";
 import { useEffect, useState } from "react";
@@ -15,11 +25,18 @@ import { RiDeleteBin2Line } from "react-icons/ri";
 import { useSelector } from "react-redux";
 import { HiOutlineExclamationCircle, HiOutlinePencil } from "react-icons/hi";
 import { toast } from "react-toastify";
-import AdminDrawer from "./AdminDrawer";
-import { IoList } from "react-icons/io5";
 import { Link } from "react-router-dom";
-import VotersJoinedGraph from "./VotersJoinedGraph";
 import Heading from "../Heading";
+
+ChartJS.register(
+  ArcElement,
+  Tooltip,
+  Legend,
+  LineElement,
+  CategoryScale,
+  LinearScale,
+  PointElement
+);
 
 export default function AdminMainDash() {
   const [elections, setElections] = useState([]);
@@ -30,8 +47,8 @@ export default function AdminMainDash() {
   const [openDeleteModal, setOpenDeleteModal] = useState(false);
   const [adminToDelete, setAdminToDelete] = useState(null);
   const [voters, setVoters] = useState(0);
+  const [voterData, setVoterData] = useState([]);
   const today = new Date();
-  const [isOpen, setIsOpen] = useState(false);
   const [electionEditModal, setElectionEditModal] = useState(false);
   const [electionDeleteModal, setElectionDeleteModal] = useState(false);
   const [electionToDelete, setElectionToDelete] = useState(null);
@@ -55,6 +72,55 @@ export default function AdminMainDash() {
     };
     fetchAdmins();
   }, []);
+
+  useEffect(() => {
+    const fetchVotersJoinedData = async () => {
+      try {
+        setLoading(true);
+        const response = await axios.get("/api/v1/voter/voters-per-month");
+        setVoterData(response.data);
+      } catch (err) {
+        toast.error(
+          err.response?.data?.message || "Error fetching voters data"
+        );
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchVotersJoinedData();
+  }, []);
+
+  const chartData = {
+    labels: voterData.map((data) => data.month),
+    datasets: [
+      {
+        label: "Voters Joined",
+        data: voterData.map((data) => data.count),
+        fill: false,
+        backgroundColor: "rgba(75, 192, 192, 0.6)",
+        borderColor: "rgba(75, 192, 192, 1)",
+        tension: 0.1,
+      },
+    ],
+  };
+
+  const chartOptions = {
+    responsive: true,
+    scales: {
+      x: {
+        title: {
+          display: true,
+          text: "Months",
+        },
+      },
+      y: {
+        title: {
+          display: true,
+          text: "Number of Voters",
+        },
+      },
+    },
+  };
 
   const fetchElections = async () => {
     try {
@@ -164,18 +230,10 @@ export default function AdminMainDash() {
   };
 
   return (
-    <div className="flex min-h-screen cursor-default">
-      <AdminSidebar className="h-full" />
-      <AdminDrawer isOpen={isOpen} setIsOpen={setIsOpen} />
+    <div className="flex flex-col md:flex-row min-h-screen cursor-default ">
+      <AdminSidebar className="h-full md:w-60" />
       <div className="flex flex-col flex-grow h-full md:mx-8 mb-10">
-        <div className="flex items-center space-x-2 p-4 mt-1 bg-slate-300 dark:bg-slate-700 md:hidden mb-10">
-          <IoList
-            className="text-4xl cursor-pointer hover:text-blue-600 transition duration-150 ease-in-out "
-            onClick={() => setIsOpen(true)}
-          />
-          <h1 className="text-2xl">Options</h1>
-        </div>
-        <div className="grid grid-cols-1 450px:grid-cols-2 md:grid-cols-3 gap-3 m-4 p-2 italic lowercase font-serif">
+        <div className="grid grid-cols-1 450px:grid-cols-2 1016px:grid-cols-3 gap-3 m-4 p-2 italic lowercase font-serif">
           <Card className="text-center text-2xl lg:text-3xl bg-slate-100 mb-3 sm:mb-0">
             <h1>Voters</h1>
             <p className="text-blue-600">{voters}</p>
@@ -191,14 +249,14 @@ export default function AdminMainDash() {
         </div>
 
         <div className="flex flex-col xl:flex-row gap-4">
-          <div className="flex flex-col">
+          <div className="flex flex-col xl:flex-grow">
             <Heading heading="voter enrollment" />
-            <div className="w-[8/9] mx-auto">
-              <VotersJoinedGraph />
+            <div className="mt-5 flex justify-center">
+              <Line data={chartData} options={chartOptions} />
             </div>
           </div>
 
-          <div className="flex flex-col xl:flex-grow">
+          <div className="flex flex-col xl:w-1/2 xl:mx-auto">
             <Heading heading="executive board" />
             <div className="m-5">
               <Table className="shadow-md mt-4">
@@ -229,16 +287,9 @@ export default function AdminMainDash() {
                       <Table.Cell>
                         {currentUser._id === admin._id ||
                         admin._id === creator._id ? (
-                          <Tooltip
-                            className="w-40"
-                            content="You cannot delete creator or self"
-                            style="light"
-                            placement="right"
-                          >
-                            <button>
-                              <RiDeleteBin2Line className="text-2xl text-gray-300 dark:text-gray-600" />
-                            </button>
-                          </Tooltip>
+                          <button>
+                            <RiDeleteBin2Line className="text-2xl text-gray-300 dark:text-gray-600" />
+                          </button>
                         ) : (
                           <button
                             className="text-red-500 hover:scale-110 transition-all duration-150 ease-in-out"
@@ -261,7 +312,7 @@ export default function AdminMainDash() {
 
         <Heading heading="Election Overview" />
 
-        <div className="grid grid-cols-1 450px:grid-cols-2 md:grid-cols-3 gap-3 m-4 p-3 italic font-serif">
+        <div className="grid grid-cols-1 450px:grid-cols-2 1016px:grid-cols-3 gap-3 m-4 p-3 italic font-serif">
           <Card className="text-center text-2xl lg:text-3xl bg-slate-100 mb-3 sm:mb-0">
             <h1>upcoming</h1>
             <p className="text-blue-600">{upcomingElections.length}</p>
@@ -283,7 +334,7 @@ export default function AdminMainDash() {
               <Table.HeadCell className="border-r">
                 Active Period
               </Table.HeadCell>
-              <Table.HeadCell className="border-r hidden md:table-cell">
+              <Table.HeadCell className="border-r hidden 1016px:table-cell">
                 Candidates
               </Table.HeadCell>
               <Table.HeadCell>Actions</Table.HeadCell>
@@ -322,7 +373,7 @@ export default function AdminMainDash() {
                         year: "2-digit",
                       })}
                     </Table.Cell>
-                    <Table.Cell className="text-[19px] hidden md:table-cell">
+                    <Table.Cell className="text-[19px] hidden 1016px:table-cell">
                       {election.candidates.length}
                     </Table.Cell>
                     <Table.Cell>

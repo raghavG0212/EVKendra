@@ -8,7 +8,7 @@ import { useDispatch } from "react-redux";
 import { useLocation, Link, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { IoCreateSharp, IoExitOutline } from "react-icons/io5";
+import { IoCreateSharp, IoExitOutline, IoListSharp } from "react-icons/io5";
 import { toast } from "react-toastify";
 import Loader from "../Loader";
 
@@ -19,6 +19,7 @@ export default function AdminSidebar() {
   const [elections, setElections] = useState([]);
   const [loading, setLoading] = useState(false);
   const [createElectionModal, setCreateElectionModal] = useState(false);
+  const [isOpen , setIsOpen] = useState(true);
   const [name, setName] = useState("");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
@@ -40,6 +41,7 @@ export default function AdminSidebar() {
     };
     fetchElections();
   }, []);
+  
 
   const handleAddElection = async () => {
     setLoading(true);
@@ -71,13 +73,19 @@ export default function AdminSidebar() {
   }
 
   return (
-    <div className="hidden md:block">
-      <Sidebar color="green">
+    <div>
+      <Sidebar className="w-full md:w-60 mb-5 md:mb-0">
         <Sidebar.Items>
-          <h1 className="font-semibold uppercase text-lg mt-1.5 ml-3">
-            options
-          </h1>
-          <Sidebar.ItemGroup>
+          <div className="flex justify-between items-center mr-5">
+            <h1 className="font-semibold text-lg mt-1 ml-3">Menu</h1>
+            <IoListSharp
+              onClick={() => {
+                setIsOpen((prev) => !prev);
+              }}
+              className="md:hidden text-2xl hover:text-blue-600 transition-all duration-150 ease-in-out focus:text-blue-700"
+            />
+          </div>
+          <Sidebar.ItemGroup className={`${isOpen ? "block" : "hidden"} `}>
             <Sidebar.Item
               as={Link}
               to="/admin-dashboard"
@@ -141,11 +149,11 @@ export default function AdminSidebar() {
               Your Profile
             </Sidebar.Item>
           </Sidebar.ItemGroup>
-          <Sidebar.ItemGroup>
+          <Sidebar.ItemGroup className={`${isOpen ? "block" : "hidden"} `}>
             <Sidebar.Item
               onClick={handleLogout}
               icon={IoExitOutline}
-              className="hover:text-blue-500 cursor-pointer dark:hover:text-blue-500 mb-20"
+              className="hover:text-blue-500 cursor-pointer dark:hover:text-blue-500"
             >
               Logout
             </Sidebar.Item>

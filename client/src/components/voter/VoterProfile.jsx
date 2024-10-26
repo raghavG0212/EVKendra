@@ -3,24 +3,13 @@ import { Label } from "flowbite-react";
 import VoterSideBar from "./VoterSidebar";
 import { useSelector } from "react-redux";
 import moment from 'moment';
-import { IoList } from "react-icons/io5";
-import VoterDrawer from "./VoterDrawer";
 
 export default function VoterProfile() {
    const currentUser = useSelector((state) => state.auth.currentUser);
-   const [isOpen, setIsOpen] = useState(false);
   return (
-    <div className="flex min-h-screen">
-      <VoterSideBar />
-      <VoterDrawer isOpen={isOpen} setIsOpen={setIsOpen} />
-      <div className="flex-grow flex-col cursor-default">
-        <div className="flex items-center space-x-2 p-4 mt-1 bg-slate-300 dark:bg-slate-700 md:hidden mb-10">
-          <IoList
-            className="text-4xl cursor-pointer hover:text-blue-600 transition duration-150 ease-in-out "
-            onClick={() => setIsOpen(true)}
-          />
-          <h1 className="text-2xl">Options</h1>
-        </div>
+    <div className="flex flex-col md:flex-row min-h-screen">
+      <VoterSideBar className="h-full md:w-60 "/>
+      <div className="flex-grow flex-col cursor-default mt-6 md:mt-0">
         <div className=" p-3 shadow m-6 sm:m-12 border dark:border-blue-950 rounded-lg">
           <h1 className="text-3xl font-semibold text-center uppercase mb-10">
             Your Profile

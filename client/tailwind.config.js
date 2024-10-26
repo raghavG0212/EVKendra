@@ -6,6 +6,7 @@ export default {
     extend: {
       screens: {
         "880px": "880px",
+        "800px": "800px",
         "1016px": "1016px",
         "1096.5px": "1096.5px",
         "450px": "450px",

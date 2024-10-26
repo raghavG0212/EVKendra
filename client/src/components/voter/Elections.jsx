@@ -9,8 +9,6 @@ import { setVoteStatus, selectElectionById } from "../../redux/voterSlice";
 import { HashLink as Link } from "react-router-hash-link";
 import { toast } from "react-toastify";
 import Loader from "../Loader";
-import { IoList } from "react-icons/io5";
-import VoterDrawer from "./VoterDrawer";
 
 export default function VoterDashboard() {
   const { id } = useParams();
@@ -24,7 +22,6 @@ export default function VoterDashboard() {
   const navigate = useNavigate();
   const location = useLocation();
   const endDate = location.state?.endDate;
-  const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
     const fetchCandidates = async () => {
@@ -67,17 +64,9 @@ export default function VoterDashboard() {
     return <Loader />;
   }
   return (
-    <div className="flex flex-row">
-      <VoterSideBar className="h-full" />
-      <VoterDrawer isOpen={isOpen} setIsOpen={setIsOpen} />
-      <div className="flex-grow border-r-2 cursor-default">
-        <div className="flex items-center space-x-2 p-4 mt-1 bg-slate-300 dark:bg-slate-700 md:hidden mb-10">
-          <IoList
-            className="text-4xl cursor-pointer hover:text-blue-600 transition duration-150 ease-in-out "
-            onClick={() => setIsOpen(true)}
-          />
-          <h1 className="text-2xl">Options</h1>
-        </div>
+    <div className="flex flex-col md:flex-row">
+      <VoterSideBar className="h-full md:w-60"/>
+      <div className="flex-grow border-r-2 cursor-default mt-6 md:mt-0">
         <div>
           <Table className="w-full  dark:text-white min-h-screen">
             <Table.Head>
