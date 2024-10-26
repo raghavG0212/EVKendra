@@ -207,7 +207,7 @@ export default function AdminDashBoard() {
     <div className="flex flex-row">
       <AdminSidebar className="h-full" />
       <AdminDrawer isOpen={isOpen} setIsOpen={setIsOpen} />
-      <div className="flex flex-col flex-grow">
+      <div className="flex flex-col flex-grow cursor-default">
         <div className="flex items-center space-x-2 p-4 mt-1 bg-slate-300 dark:bg-slate-700 md:hidden mb-10">
           <IoList
             className="text-4xl cursor-pointer hover:text-blue-600 transition duration-150 ease-in-out "

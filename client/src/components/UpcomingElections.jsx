@@ -101,7 +101,7 @@ export default function UpcomingElections() {
             return (
               <Card
                 key={election._id}
-                className="shadow-lg bg-slate-100  dark:bg-slate-900"
+                className="shadow-lg bg-slate-100  dark:bg-slate-900 cursor-default"
               >
                 <h2 className="text-2xl font-bold text-center mb-2 capitalize">
                   {election.name}

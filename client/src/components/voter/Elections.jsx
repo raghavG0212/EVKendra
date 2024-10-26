@@ -70,7 +70,7 @@ export default function VoterDashboard() {
     <div className="flex flex-row">
       <VoterSideBar className="h-full" />
       <VoterDrawer isOpen={isOpen} setIsOpen={setIsOpen} />
-      <div className="flex-grow border-r-2">
+      <div className="flex-grow border-r-2 cursor-default">
         <div className="flex items-center space-x-2 p-4 mt-1 bg-slate-300 dark:bg-slate-700 md:hidden mb-10">
           <IoList
             className="text-4xl cursor-pointer hover:text-blue-600 transition duration-150 ease-in-out "

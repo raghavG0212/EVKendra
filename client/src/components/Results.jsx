@@ -33,19 +33,19 @@ export default function Results() {
       <Heading heading="results" />
 
       {loading ? (
-        <div className="flex justify-center text-2xl space-x-2">
+        <div className="flex justify-center text-2xl space-x-2 cursor-default">
           <Spinner size="xl" />
           <span className="mt-1">Loading...</span>
         </div>
       ) : elections.length === 0 ? (
-        <div className="flex flex-col justify-center items-center m-16 p-10 bg-red-600 dark:bg-inherit bg-opacity-30 border border-slate-200 dark:border-teal-600 dark:bg-gray-800 rounded ">
+        <div className="flex flex-col justify-center items-center m-16 p-10 bg-red-600 dark:bg-inherit bg-opacity-30 cursor-default border border-slate-200 dark:border-teal-600 dark:bg-gray-800 rounded ">
           <HiExclamationCircle className="text-6xl mb-2" />
           <h1 className=" text-lg sm:text-2xl text-center text-nowrap">
             No Results Available
           </h1>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3 p-4 mb-10">
+        <div className="grid grid-cols-1 md:grid-cols-2 cursor-default xl:grid-cols-3 gap-3 p-4 mb-10">
           {elections.map((election) => (
             <Card
               className="shadow-lg bg-slate-100 dark:bg-slate-900 relative"

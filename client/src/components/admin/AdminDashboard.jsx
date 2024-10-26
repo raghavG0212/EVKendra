@@ -4,9 +4,9 @@ import {
   Modal,
   Table,
   Spinner,
-  TableHead,
   Label,
   TextInput,
+  Tooltip,
 } from "flowbite-react";
 import axios from "axios";
 import AdminSidebar from "./AdminSidebar";
@@ -164,7 +164,7 @@ export default function AdminMainDash() {
   };
 
   return (
-    <div className="flex min-h-screen">
+    <div className="flex min-h-screen cursor-default">
       <AdminSidebar className="h-full" />
       <AdminDrawer isOpen={isOpen} setIsOpen={setIsOpen} />
       <div className="flex flex-col flex-grow h-full md:mx-8 mb-10">
@@ -191,9 +191,11 @@ export default function AdminMainDash() {
         </div>
 
         <div className="flex flex-col xl:flex-row gap-4">
-          <div className="flex flex-col xl:w-1/2">
+          <div className="flex flex-col">
             <Heading heading="voter enrollment" />
-            <VotersJoinedGraph />
+            <div className="w-[8/9] mx-auto">
+              <VotersJoinedGraph />
+            </div>
           </div>
 
           <div className="flex flex-col xl:flex-grow">
@@ -227,7 +229,16 @@ export default function AdminMainDash() {
                       <Table.Cell>
                         {currentUser._id === admin._id ||
                         admin._id === creator._id ? (
-                          <RiDeleteBin2Line className="text-2xl text-gray-300 dark:text-gray-600" />
+                          <Tooltip
+                            className="w-40"
+                            content="You cannot delete creator or self"
+                            style="light"
+                            placement="right"
+                          >
+                            <button>
+                              <RiDeleteBin2Line className="text-2xl text-gray-300 dark:text-gray-600" />
+                            </button>
+                          </Tooltip>
                         ) : (
                           <button
                             className="text-red-500 hover:scale-110 transition-all duration-150 ease-in-out"
@@ -282,7 +293,7 @@ export default function AdminMainDash() {
                 .sort((a, b) => new Date(a.startDate) - new Date(b.startDate))
                 .map((election) => (
                   <Table.Row key={election._id}>
-                    <Table.Cell className="font-semibold sm:text-[16px] hover:underline">
+                    <Table.Cell className="font-semibold sm:text-[16px] hover:underline text-wrap">
                       <Link to={`/election/${election._id}/candidates/getAll`}>
                         {election.name}
                       </Link>

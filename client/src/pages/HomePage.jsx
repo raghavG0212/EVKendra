@@ -23,7 +23,7 @@ export default function HomePage() {
       <div className="flex flex-col xl:flex-row justify-between">
         {!currentUser ? (
           <div className="flex flex-col space-y-10 items-center text-center justify-center mt-10 md:mt-0 md:text-5xl text-3xl">
-            <h1 className="font-bold uppercase">Login To Cast Vote</h1>
+            <h1 className="font-bold uppercase cursor-default">Login To Cast Vote</h1>
             <Link to="/login">
               <Button gradientDuoTone="purpleToPink" outline className="w-52">
                 Login As Voter
@@ -37,7 +37,7 @@ export default function HomePage() {
           </div>
         ) : (
           <div className="flex flex-col sm:ml-10 space-y-10 items-center text-center justify-center mt-10 md:mt-0">
-            <div className="flex flex-col uppercase">
+            <div className="flex flex-col cursor-default uppercase">
               <span className="font-bold text-orange-500 md:text-6xl text-5xl mb-3">
                 Welcome
               </span>
@@ -60,7 +60,7 @@ export default function HomePage() {
           <Carousel />
         </div>
       </div>
-      <div className="mt-20 home-text">
+      <div className="mt-20 home-text cursor-default">
         <h1 className="text-center capitalize mb-10 text-5xl md:hidden custom-title text-pretty">
           Cast Your Vote, Make a Difference
         </h1>

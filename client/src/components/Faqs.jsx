@@ -7,7 +7,7 @@ export default function Faqs() {
     <div>
       <Heading heading="FAQ'S" />
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 p-4 mb-10">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 p-4 mb-10 cursor-default">
         <Card
           className="shadow-lg bg-slate-100 capitalize  dark:bg-slate-900"
           horizontal

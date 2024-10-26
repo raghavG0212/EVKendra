@@ -53,7 +53,7 @@ export default function Header() {
           </span>
         </div>
       </Link>
-      <div className="font-semibold italic mx-auto hidden md:block uppercase">
+      <div className="font-semibold italic mx-auto hidden md:block uppercase cursor-default">
         <Wave
           text="Cast Your Vote, Make a Difference"
           effect="stretch"
