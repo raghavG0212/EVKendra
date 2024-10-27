@@ -1,4 +1,4 @@
-import { Button, Card } from "flowbite-react";
+import { Button, Card, Toast } from "flowbite-react";
 import { useEffect, useState } from "react";
 import {
   FaArrowAltCircleDown,
@@ -146,7 +146,7 @@ export default function UpcomingElections() {
                     <p>No candidates available</p>
                   )}
                 </div>
-                <Button gradientDuoTone="purpleToBlue" className="m-3" outline>
+                <Button gradientDuoTone="purpleToBlue" className="m-3" outline onClick={()=>toast.info("Yet to be published")}>
                   Know More...
                 </Button>
               </Card>

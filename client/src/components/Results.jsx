@@ -1,14 +1,16 @@
-import { Button, Card, Spinner, Table } from "flowbite-react";
+import { Button, Card, Modal, Spinner, Table } from "flowbite-react";
 import { useEffect, useState } from "react";
 import { HiExclamationCircle } from "react-icons/hi";
+import { BsGraphUpArrow } from "react-icons/bs";
 import axios from "axios";
 import { toast } from "react-toastify";
 import Heading from "./Heading";
-import { GiPodium } from "react-icons/gi";
 
 export default function Results() {
   const [elections, setElections] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [electionToShow, setElectionToShow] = useState([]);
+  const [showStatistics, setShowStatistics] = useState(false);
 
   useEffect(() => {
     const fetchElections = async () => {
@@ -92,6 +94,10 @@ export default function Results() {
                 gradientDuoTone="purpleToBlue"
                 outline
                 className="w-[60%] ml-2"
+                onClick={() => {
+                  setShowStatistics(true);
+                  setElectionToShow(election);
+                }}
               >
                 Statistics
               </Button>
@@ -99,6 +105,20 @@ export default function Results() {
           ))}
         </div>
       )}
+      <Modal show={showStatistics} onClose={() => setShowStatistics(false)} position={"center"}>
+        {/* <Modal.Header>{electionToShow.name}</Modal.Header> */}
+        <Modal.Header>
+          <div className="flex items-center font-semibold uppercase">
+            {electionToShow.name} Statistics <BsGraphUpArrow className="ml-6"/>
+          </div>
+        </Modal.Header>
+        <Modal.Body>
+
+        </Modal.Body>
+        <Modal.Footer>
+          <Button color="failure" onClick={()=>setShowStatistics(false)} outline>Close</Button>
+        </Modal.Footer>
+      </Modal>
     </div>
   );
 }

@@ -24,7 +24,6 @@ import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { RiDeleteBin2Line, RiAdminLine } from "react-icons/ri";
 import { HiOutlineExclamationCircle, HiOutlinePencil } from "react-icons/hi";
-import { SiTicktick } from "react-icons/si";
 import {
   MdOutlineEventAvailable,
   MdLiveTv,
@@ -382,7 +381,7 @@ export default function AdminMainDash() {
                     <Table.Cell className="font-semibold hover:underline text-wrap ">
                       <div className="flex items-center justify-between">
                         <Link
-                          to={`/election/${election._id}/candidates/getAll`}
+                          to={`/election/${election._id}/candidates`}
                         >
                           <span className="sm:text-[16px]">
                             {election.name}

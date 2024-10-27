@@ -111,7 +111,7 @@ export default function AdminSidebar() {
               Menu
             </h1>
             <IoListSharp
-              className={`md:hidden text-2xl hover:text-blue-600 transition-all duration-150 ease-in-out focus:text-blue-700 ${
+              className={`md:hidden text-2xl hover:text-blue-600 hover:scale-110 transition-all duration-150 ease-in-out focus:text-blue-700 ${
                 isOpen && "scale-105 text-blue-600"
               }`}
             />
