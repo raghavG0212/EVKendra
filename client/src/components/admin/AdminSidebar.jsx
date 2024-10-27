@@ -75,12 +75,13 @@ export default function AdminSidebar() {
     }
   };
 
-  const handleNavigation = (path) => {
+  const handleNavigation = (path, name) => {
     navigate(path);
     if (window.innerWidth > 768) {
       window.scrollTo(0, 0);
     }
     setIsCollapsed(true);
+    toast.info(name);
   };
 
   const handleLogout = () => {
@@ -158,7 +159,7 @@ export default function AdminSidebar() {
                     key={election._id}
                     as="button"
                     onClick={() =>
-                      handleNavigation(`/election/${election._id}/candidates`)
+                      handleNavigation(`/election/${election._id}/candidates`,election.name)
                     }
                     icon={CiCircleList}
                     active={
@@ -202,7 +203,7 @@ export default function AdminSidebar() {
             <Sidebar.Item
               onClick={handleLogout}
               icon={IoExitOutline}
-              className="hover:text-blue-500 cursor-pointer dark:hover:text-blue-500"
+              className="cursor-pointer"
             >
               Logout
             </Sidebar.Item>

@@ -1,4 +1,4 @@
-import { Sidebar} from "flowbite-react";
+import { Sidebar } from "flowbite-react";
 import { FaPerson } from "react-icons/fa6";
 import { useLocation, Link, useNavigate } from "react-router-dom";
 import { logout } from "../../redux/authSlice";
@@ -16,7 +16,7 @@ export default function VoterSideBar() {
   const location = useLocation();
   const [elections, setElections] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [isOpen , setIsOpen] = useState(true);
+  const [isOpen, setIsOpen] = useState(true);
   const [isCollapsed, setIsCollapsed] = useState(true);
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -37,11 +37,8 @@ export default function VoterSideBar() {
         setElections(filteredElections);
       } catch {
         toast.error("Failed to load elections");
-      } 
-      finally {
-        setTimeout(() => {
-          setLoading(false);
-        }, 1000);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -61,12 +58,15 @@ export default function VoterSideBar() {
     };
   }, []);
 
-  const handleNavigation = (path, endDate) => {
-    navigate(`${path}?endDate=${endDate}`);
+  const handleNavigation = (election) => {
+    navigate(
+      `/election/${election._id}/vote?startDate=${election.startDate}?endDate=${election.endDate}`
+    );
     if (window.innerWidth > 768) {
       window.scrollTo(0, 0);
     }
     setIsCollapsed(true);
+    toast.info(election.name)
   };
 
   const handleLogout = () => {
@@ -118,12 +118,7 @@ export default function VoterSideBar() {
                 <Sidebar.Item
                   key={election._id}
                   as="button"
-                  onClick={() =>
-                    handleNavigation(
-                      `/election/${election._id}/vote`,
-                      election.endDate
-                    )
-                  }
+                  onClick={() => handleNavigation(election)}
                   active={
                     location.pathname === `/election/${election._id}/vote`
                   }

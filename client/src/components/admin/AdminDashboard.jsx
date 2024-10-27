@@ -241,9 +241,10 @@ export default function AdminMainDash() {
     }
   };
 
-  const NavigateToElection =(id)=>{
-    navigate(`/election/${id}/candidates`);
+  const NavigateToElection =(election)=>{
+    navigate(`/election/${election._id}/candidates`);
     window.scroll(0,0);
+    toast.info(election.name);
   }
 
   return (
@@ -386,7 +387,7 @@ export default function AdminMainDash() {
                   <Table.Row key={election._id} className="hover:bg-slate-200 dark:hover:bg-slate-900">
                     <Table.Cell
                       className="font-semibold hover:underline text-wrap cursor-pointer"
-                      onClick={() => NavigateToElection(election._id)}
+                      onClick={() => NavigateToElection(election)}
                     >
                       <div className="flex items-center justify-between">
                         <span className="sm:text-[16px]">{election.name}</span>
