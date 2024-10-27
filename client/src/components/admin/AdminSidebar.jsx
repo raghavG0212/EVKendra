@@ -20,6 +20,7 @@ export default function AdminSidebar() {
   const [loading, setLoading] = useState(false);
   const [createElectionModal, setCreateElectionModal] = useState(false);
   const [isOpen , setIsOpen] = useState(true);
+  const [isCollapsed, setIsCollapsed] = useState(true);
   const [name, setName] = useState("");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
@@ -42,6 +43,18 @@ export default function AdminSidebar() {
     fetchElections();
   }, []);
   
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth >= 768) {
+        setIsOpen(true);
+      }
+    };
+    window.addEventListener("resize", handleResize);
+    handleResize();
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
 
   const handleAddElection = async () => {
     setLoading(true);
@@ -62,6 +75,14 @@ export default function AdminSidebar() {
     }
   };
 
+  const handleNavigation = (path) => {
+    navigate(path);
+    if (window.innerWidth > 768) {
+      window.scrollTo(0, 0);
+    }
+    setIsCollapsed(true);
+  };
+
   const handleLogout = () => {
     dispatch(logout());
     toast.success("You logged out successfully");
@@ -76,15 +97,28 @@ export default function AdminSidebar() {
     <div>
       <Sidebar className="w-full md:w-60 mb-5 md:mb-0">
         <Sidebar.Items>
-          <div className="flex justify-between items-center mr-5">
-            <h1 className="font-semibold text-lg mt-1 ml-3">Menu</h1>
+          <div
+            className="flex justify-between items-center mr-5 cursor-pointer md:hidden"
+            onClick={() => {
+              setIsOpen((prev) => !prev);
+            }}
+          >
+            <h1
+              className={`font-semibold text-lg mt-1 ml-3 ${
+                isOpen && "text-blue-600"
+              }`}
+            >
+              Menu
+            </h1>
             <IoListSharp
-              onClick={() => {
-                setIsOpen((prev) => !prev);
-              }}
-              className="md:hidden text-2xl hover:text-blue-600 transition-all duration-150 ease-in-out focus:text-blue-700"
+              className={`md:hidden text-2xl hover:text-blue-600 transition-all duration-150 ease-in-out focus:text-blue-700 ${
+                isOpen && "scale-105 text-blue-600"
+              }`}
             />
           </div>
+          <h1 className="hidden md:block font-semibold text-lg mt-1 ml-3">
+            Menu
+          </h1>
           <Sidebar.ItemGroup className={`${isOpen ? "block" : "hidden"} `}>
             <Sidebar.Item
               as={Link}
@@ -94,6 +128,7 @@ export default function AdminSidebar() {
             >
               Dashboard
             </Sidebar.Item>
+            <div className="h-[3px] w-full bg-gradient-to-r from-slate-200 via-slate-300 to-slate-500 dark:from-slate-400 dark:via-slate-500 dark:to-slate-700" />
             <Sidebar.Item
               icon={IoCreateSharp}
               className="cursor-pointer font-bold"
@@ -102,25 +137,36 @@ export default function AdminSidebar() {
                 gradientDuoTone="purpleToBlue"
                 onClick={() => setCreateElectionModal(true)}
                 outline
+                className="w-full"
               >
                 Add New Election
               </Button>
             </Sidebar.Item>
-            <Sidebar.Collapse icon={GiVote} label="Elections">
+            <div className="h-[3px] w-full bg-gradient-to-r from-slate-200 via-slate-300 to-slate-500 dark:from-slate-400 dark:via-slate-500 dark:to-slate-700" />
+            <Sidebar.Collapse
+              icon={GiVote}
+              label="Elections"
+              open={!isCollapsed}
+              onClick={() => {
+                setIsCollapsed((prev) => !prev);
+              }}
+            >
               {elections
                 .sort((a, b) => new Date(a.startDate) - new Date(b.startDate))
-                .map((election) => (
+                .map((election, index) => (
                   <Sidebar.Item
                     key={election._id}
-                    as={Link}
-                    to={`/election/${election._id}/candidates/getAll`}
+                    as="button"
+                    onClick={() =>
+                      handleNavigation(`/election/${election._id}/candidates`)
+                    }
                     icon={CiCircleList}
                     active={
                       location.pathname ===
-                      `/election/${election._id}/candidates/getAll`
+                      `/election/${election._id}/candidates`
                     }
                   >
-                    <div className="flex flex-col text-wrap">
+                    <div className="flex flex-col text-start text-wrap">
                       {election.name}
                       {new Date(election.startDate) > today ? (
                         <div className="relative flex items-center font-bold text-green-500">
@@ -131,15 +177,19 @@ export default function AdminSidebar() {
                           <span className="mr-3 font-semibold">Ended</span>
                         </div>
                       ) : (
-                        <div className="relative flex items-center font-bold text-red-600">
+                        <div className="flex items-center font-bold text-red-600">
                           <span className="mr-3 font-semibold">Live</span>
-                          <span className="absolute right-0 w-2 h-2 bg-red-600 rounded-full animate-pulse mt-1"></span>
+                          <span className=" w-2 h-2 bg-red-600 rounded-full animate-pulse mt-[3.5px]"></span>
                         </div>
                       )}
                     </div>
+                    {index + 1 < elections.length && (
+                      <div className="h-[3px] w-full bg-gradient-to-r from-slate-200 via-slate-300 to-slate-500 dark:from-slate-400 dark:via-slate-500 dark:to-slate-700 mt-2" />
+                    )}
                   </Sidebar.Item>
                 ))}
             </Sidebar.Collapse>
+            <div className="h-[3px] w-full bg-gradient-to-r from-slate-200 via-slate-300 to-slate-500 dark:from-slate-400 dark:via-slate-500 dark:to-slate-700" />
             <Sidebar.Item
               as={Link}
               to="/admin-profile"
@@ -148,8 +198,7 @@ export default function AdminSidebar() {
             >
               Your Profile
             </Sidebar.Item>
-          </Sidebar.ItemGroup>
-          <Sidebar.ItemGroup className={`${isOpen ? "block" : "hidden"} `}>
+            <div className="h-[3px] w-full bg-gradient-to-r from-slate-200 via-slate-300 to-slate-500 dark:from-slate-400 dark:via-slate-500 dark:to-slate-700" />
             <Sidebar.Item
               onClick={handleLogout}
               icon={IoExitOutline}

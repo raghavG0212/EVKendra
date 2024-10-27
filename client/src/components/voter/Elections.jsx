@@ -21,7 +21,8 @@ export default function VoterDashboard() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
-  const endDate = location.state?.endDate;
+  const params = new URLSearchParams(location.search);
+  const endDate = params.get("endDate");
 
   useEffect(() => {
     const fetchCandidates = async () => {
@@ -65,7 +66,7 @@ export default function VoterDashboard() {
   }
   return (
     <div className="flex flex-col md:flex-row">
-      <VoterSideBar className="h-full md:w-60"/>
+      <VoterSideBar className="h-full md:w-60" />
       <div className="flex-grow border-r-2 cursor-default mt-6 md:mt-0">
         <div>
           <Table className="w-full  dark:text-white min-h-screen">

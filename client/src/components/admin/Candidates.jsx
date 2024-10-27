@@ -45,7 +45,6 @@ export default function AdminDashBoard() {
     partyName: " ",
     partyLogo: null,
   });
-
   const handleChange = (e) => {
     const { id, value, files } = e.target;
     setFormData({

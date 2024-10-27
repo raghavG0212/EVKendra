@@ -31,14 +31,14 @@ export default function App() {
         <Route path="/about" element={<AboutPage />} />
         <Route element={<OnlyVoter />}>
           <Route path="/voter-profile" element={<VoterProfile />} />
-          <Route path="/election/:id/candidates/vote" element={<Elections />} />
+          <Route path="/election/:id/vote" element={<Elections />} />
           <Route path="/voting-success" element={<VotingSuccessPage />} />
         </Route>
         <Route element={<OnlyAdmin />}>
           <Route path="/admin-dashboard" element={<AdminDashboard />} />
           <Route path="/admin-profile" element={<AdminProfile />} />
           <Route
-            path="/election/:id/candidates/getAll"
+            path="/election/:id/candidates"
             element={<Candidates />}
           />
         </Route>

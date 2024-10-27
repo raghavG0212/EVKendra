@@ -17,6 +17,7 @@ export default function VoterSideBar() {
   const [elections, setElections] = useState([]);
   const [loading, setLoading] = useState(false);
   const [isOpen , setIsOpen] = useState(true);
+  const [isCollapsed, setIsCollapsed] = useState(true);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const today = new Date();
@@ -60,6 +61,14 @@ export default function VoterSideBar() {
     };
   }, []);
 
+  const handleNavigation = (path, endDate) => {
+    navigate(`${path}?endDate=${endDate}`);
+    if (window.innerWidth > 768) {
+      window.scrollTo(0, 0);
+    }
+    setIsCollapsed(true);
+  };
+
   const handleLogout = () => {
     dispatch(logout());
     dispatch(clearVoteStatus());
@@ -74,34 +83,57 @@ export default function VoterSideBar() {
     <div>
       <Sidebar className="w-full md:w-60">
         <Sidebar.Items>
-          <div className="flex justify-between items-center mr-5">
-            <h1 className="font-semibold text-lg mt-1 ml-3">Menu</h1>
+          <div
+            className="flex justify-between items-center mr-5 cursor-pointer md:hidden"
+            onClick={() => {
+              setIsOpen((prev) => !prev);
+            }}
+          >
+            <h1
+              className={`font-semibold text-lg mt-1 ml-3 ${
+                isOpen && "text-blue-600"
+              }`}
+            >
+              Menu
+            </h1>
             <IoListSharp
-              onClick={() => {
-                setIsOpen((prev) => !prev);
-              }}
-              className="md:hidden text-2xl hover:text-blue-600 transition-all duration-150 ease-in-out focus:text-blue-700"
+              className={`md:hidden text-2xl hover:text-blue-600 transition-all duration-150 ease-in-out focus:text-blue-700 ${
+                isOpen && "scale-105 text-blue-600"
+              }`}
             />
           </div>
+          <h1 className="hidden md:block font-semibold text-lg mt-1 ml-3">
+            Menu
+          </h1>
           <Sidebar.ItemGroup className={`${isOpen ? "block" : "hidden"}`}>
-            <Sidebar.Collapse label="Elections" icon={GiVote}>
-              {elections.map((election) => (
+            <Sidebar.Collapse
+              label="Elections"
+              icon={GiVote}
+              open={!isCollapsed}
+              onClick={() => {
+                setIsCollapsed((prev) => !prev);
+              }}
+            >
+              {elections.map((election, index) => (
                 <Sidebar.Item
                   key={election._id}
-                  as={Link}
-                  to={`/election/${election._id}/candidates/vote`}
-                  state={{ endDate: election.endDate }}
+                  as="button"
+                  onClick={() =>
+                    handleNavigation(
+                      `/election/${election._id}/vote`,
+                      election.endDate
+                    )
+                  }
                   active={
-                    location.pathname ===
-                    `/election/${election._id}/candidates/vote`
+                    location.pathname === `/election/${election._id}/vote`
                   }
                   icon={CiCircleList}
                   className={`hover:text-blue-500 dark:hover:text-blue-500 `}
                 >
-                  <div className="flex flex-col text-wrap">
+                  <div className="flex flex-col text-start text-wrap">
                     {election.name}
                     <div
-                      className={`relative flex items-center font-bold ${
+                      className={`flex items-center font-bold ${
                         new Date(election.endDate) < today
                           ? "text-gray-400"
                           : "text-red-600"
@@ -111,13 +143,17 @@ export default function VoterSideBar() {
                         {new Date(election.endDate) < today ? "Ended" : "Live"}
                       </span>
                       {new Date(election.endDate) >= today && (
-                        <span className="absolute right-0 w-2 h-2 bg-red-600 rounded-full animate-pulse mt-1"></span>
+                        <span className=" w-2 h-2 bg-red-600 rounded-full animate-pulse mt-[5px]"></span>
                       )}
                     </div>
                   </div>
+                  {index + 1 < elections.length && (
+                    <div className="h-[3px] w-full bg-gradient-to-r from-slate-200 via-slate-300 to-slate-500 dark:from-slate-400 dark:via-slate-500 dark:to-slate-700 mt-2" />
+                  )}
                 </Sidebar.Item>
               ))}
             </Sidebar.Collapse>
+            <div className="h-[3px] w-full bg-gradient-to-r from-slate-200 via-slate-300 to-slate-500 dark:from-slate-400 dark:via-slate-500 dark:to-slate-700 mt-2" />
             <Sidebar.Item
               as={Link}
               to="/voter-profile"
@@ -126,8 +162,7 @@ export default function VoterSideBar() {
             >
               Your Profile
             </Sidebar.Item>
-          </Sidebar.ItemGroup>
-          <Sidebar.ItemGroup className={`${isOpen ? "block" : "hidden"}`}>
+            <div className="h-[3px] w-full bg-gradient-to-r from-slate-200 via-slate-300 to-slate-500 dark:from-slate-400 dark:via-slate-500 dark:to-slate-700 mt-2" />
             <Sidebar.Item
               onClick={handleLogout}
               icon={IoExitOutline}

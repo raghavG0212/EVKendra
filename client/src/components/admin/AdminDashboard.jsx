@@ -21,9 +21,18 @@ import { Line } from "react-chartjs-2";
 import axios from "axios";
 import AdminSidebar from "./AdminSidebar";
 import { useEffect, useState } from "react";
-import { RiDeleteBin2Line } from "react-icons/ri";
 import { useSelector } from "react-redux";
+import { RiDeleteBin2Line, RiAdminLine } from "react-icons/ri";
 import { HiOutlineExclamationCircle, HiOutlinePencil } from "react-icons/hi";
+import { SiTicktick } from "react-icons/si";
+import {
+  MdOutlineEventAvailable,
+  MdLiveTv,
+  MdEventBusy,
+  MdOutlineFactCheck,
+  MdHowToVote,
+} from "react-icons/md";
+import { GiVote } from "react-icons/gi";
 import { toast } from "react-toastify";
 import { Link } from "react-router-dom";
 import Heading from "../Heading";
@@ -147,6 +156,9 @@ export default function AdminMainDash() {
   const endedElections = elections.filter(
     (election) => new Date(election.endDate) < today
   );
+  const declaredElections = elections.filter(
+    (election) => election.result?.winner
+  );
 
   useEffect(() => {
     const countVoters = async () => {
@@ -236,14 +248,23 @@ export default function AdminMainDash() {
         <div className="grid grid-cols-1 450px:grid-cols-2 1016px:grid-cols-3 gap-3 m-4 p-2 italic lowercase font-serif">
           <Card className="text-center text-2xl lg:text-3xl bg-slate-100 mb-3 sm:mb-0">
             <h1>Voters</h1>
+            <div className="flex justify-center text-5xl">
+              <MdHowToVote />
+            </div>
             <p className="text-blue-600">{voters}</p>
           </Card>
           <Card className="text-center text-2xl lg:text-3xl bg-slate-100 mb-3 sm:mb-0">
             <h1>Admins</h1>
+            <div className="flex justify-center text-5xl">
+              <RiAdminLine />
+            </div>
             <p className="text-blue-600">{admins.length}</p>
           </Card>
           <Card className="text-center text-2xl lg:text-3xl bg-slate-100 mb-3 sm:mb-0">
             <h1>Elections</h1>
+            <div className="flex justify-center text-5xl">
+              <GiVote />
+            </div>
             <p className="text-blue-600">{elections.length}</p>
           </Card>
         </div>
@@ -270,16 +291,14 @@ export default function AdminMainDash() {
                       <Table.Cell className="border-r font-semibold flex justify-between items-center">
                         <span
                           className={`${
-                            currentUser._id === admin._id
-                              ? "text-blue-600 text-[20px]"
-                              : "text-lg"
-                          }`}
+                            currentUser._id === admin._id && "text-blue-600"
+                          } text-[20px] `}
                         >
                           {" "}
                           {admin.name}
                         </span>
                         {admin._id === creator._id && (
-                          <span className="text-[16px] capitalize bg-cyan-600 text-white px-3 py-1 rounded-md font-mono">
+                          <span className="text-[10px] sm:text-[16px] capitalize bg-cyan-600 text-white px-3 sm:py-1 rounded-md font-mono mt-1.5 sm:mt-0">
                             creator
                           </span>
                         )}
@@ -315,15 +334,31 @@ export default function AdminMainDash() {
         <div className="grid grid-cols-1 450px:grid-cols-2 1016px:grid-cols-3 gap-3 m-4 p-3 italic font-serif">
           <Card className="text-center text-2xl lg:text-3xl bg-slate-100 mb-3 sm:mb-0">
             <h1>upcoming</h1>
+            <div className="flex justify-center text-5xl">
+              <MdOutlineEventAvailable/>
+            </div>
             <p className="text-blue-600">{upcomingElections.length}</p>
           </Card>
           <Card className="text-center text-2xl lg:text-3xl bg-slate-100 mb-3 sm:mb-0">
             <h1>live</h1>
+            <div className="flex justify-center text-5xl">
+              <MdLiveTv />
+            </div>
             <p className="text-blue-600">{liveElections.length}</p>
           </Card>
           <Card className="text-center text-2xl lg:text-3xl bg-slate-100 mb-3 sm:mb-0">
             <h1>ended</h1>
+            <div className="flex justify-center text-5xl">
+              <MdEventBusy />
+            </div>
             <p className="text-blue-600">{endedElections.length}</p>
+          </Card>
+          <Card className="text-center text-2xl lg:text-3xl bg-slate-100 mb-3 sm:mb-0">
+            <h1>declared</h1>
+            <div className="flex justify-center text-5xl">
+              <MdOutlineFactCheck />
+            </div>
+            <p className="text-blue-600">{declaredElections.length}</p>
           </Card>
         </div>
 
@@ -344,10 +379,19 @@ export default function AdminMainDash() {
                 .sort((a, b) => new Date(a.startDate) - new Date(b.startDate))
                 .map((election) => (
                   <Table.Row key={election._id}>
-                    <Table.Cell className="font-semibold sm:text-[16px] hover:underline text-wrap">
-                      <Link to={`/election/${election._id}/candidates/getAll`}>
-                        {election.name}
-                      </Link>
+                    <Table.Cell className="font-semibold hover:underline text-wrap ">
+                      <div className="flex items-center justify-between">
+                        <Link
+                          to={`/election/${election._id}/candidates/getAll`}
+                        >
+                          <span className="sm:text-[16px]">
+                            {election.name}
+                          </span>
+                        </Link>
+                        {election.result?.winner && (
+                          <MdOutlineFactCheck className="text-green-600 xl:mr-16" />
+                        )}
+                      </div>
                     </Table.Cell>
                     <Table.Cell
                       className={`md:text-lg font-medium ${
