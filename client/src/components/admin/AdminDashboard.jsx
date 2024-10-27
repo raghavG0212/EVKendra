@@ -33,7 +33,7 @@ import {
 } from "react-icons/md";
 import { GiVote } from "react-icons/gi";
 import { toast } from "react-toastify";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Heading from "../Heading";
 
 ChartJS.register(
@@ -47,6 +47,7 @@ ChartJS.register(
 );
 
 export default function AdminMainDash() {
+  const navigate = useNavigate();
   const [elections, setElections] = useState([]);
   const currentUser = useSelector((state) => state.auth.currentUser);
   const [admins, setAdmins] = useState([]);
@@ -240,6 +241,11 @@ export default function AdminMainDash() {
     }
   };
 
+  const NavigateToElection =(id)=>{
+    navigate(`/election/${id}/candidates`);
+    window.scroll(0,0);
+  }
+
   return (
     <div className="flex flex-col md:flex-row min-h-screen cursor-default ">
       <AdminSidebar className="h-full md:w-60" />
@@ -334,7 +340,7 @@ export default function AdminMainDash() {
           <Card className="text-center text-2xl lg:text-3xl bg-slate-100 mb-3 sm:mb-0">
             <h1>upcoming</h1>
             <div className="flex justify-center text-5xl">
-              <MdOutlineEventAvailable/>
+              <MdOutlineEventAvailable />
             </div>
             <p className="text-blue-600">{upcomingElections.length}</p>
           </Card>
@@ -377,16 +383,14 @@ export default function AdminMainDash() {
               {elections
                 .sort((a, b) => new Date(a.startDate) - new Date(b.startDate))
                 .map((election) => (
-                  <Table.Row key={election._id}>
-                    <Table.Cell className="font-semibold hover:underline text-wrap ">
+                  <Table.Row key={election._id} className="hover:bg-slate-200 dark:hover:bg-slate-900">
+                    <Table.Cell
+                      className="font-semibold hover:underline text-wrap cursor-pointer"
+                      onClick={() => NavigateToElection(election._id)}
+                    >
                       <div className="flex items-center justify-between">
-                        <Link
-                          to={`/election/${election._id}/candidates`}
-                        >
-                          <span className="sm:text-[16px]">
-                            {election.name}
-                          </span>
-                        </Link>
+                        <span className="sm:text-[16px]">{election.name}</span>
+
                         {election.result?.winner && (
                           <MdOutlineFactCheck className="text-green-600 xl:mr-16" />
                         )}
