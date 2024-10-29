@@ -9,20 +9,20 @@ import { setVoteStatus, selectElectionById } from "../../redux/voterSlice";
 import { HashLink as Link } from "react-router-hash-link";
 import { toast } from "react-toastify";
 import Loader from "../Loader";
+import moment from "moment";
 
 export default function VoterDashboard() {
   const { id } = useParams();
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const location = useLocation();
   const [candidates, setCandidates] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [loading, setLoading] = useState(false);
   const currentUser = useSelector((state) => state.auth.currentUser);
   const election = useSelector((state) => selectElectionById(state, id));
   const [candidateID, setCandidateID] = useState(null);
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const location = useLocation();
-  const params = new URLSearchParams(location.search);
-  const endDate = params.get("endDate");
+  const { Ename, startDate, endDate } = location.state || {};
 
   useEffect(() => {
     const fetchCandidates = async () => {
@@ -69,6 +69,17 @@ export default function VoterDashboard() {
       <VoterSideBar className="h-full md:w-60" />
       <div className="flex-grow border-r-2 cursor-default mt-6 md:mt-0">
         <div>
+          <div className="flex justify-center items-center mt-1 mb-2 p-4 bg-slate-300 dark:bg-slate-700 rounded-md">
+            <div className="text-center">
+              <h1 className="text-sm sm:text-lg md:text-xl lg:text-2xl font-semibold font-mono text-stone-900 dark:text-white">
+                {Ename}
+              </h1>
+              <p className="text-xs sm:text-sm font-light md:text-lg text-stone-700 dark:text-stone-400">
+                {moment(startDate).format("DD/MM/YYYY")} -{" "}
+                {moment(endDate).format("DD/MM/YYYY")}
+              </p>
+            </div>
+          </div>
           <Table className="w-full  dark:text-white min-h-screen">
             <Table.Head>
               <Table.HeadCell className="border-r">Name</Table.HeadCell>

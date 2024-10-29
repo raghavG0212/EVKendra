@@ -6,7 +6,6 @@ import { useDispatch } from "react-redux";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
-import Loader from "../Loader";
 import { clearVoteStatus } from "../../redux/voterSlice";
 import { GiVote } from "react-icons/gi";
 import { CiCircleList } from "react-icons/ci";
@@ -59,14 +58,17 @@ export default function VoterSideBar() {
   }, []);
 
   const handleNavigation = (election) => {
-    navigate(
-      `/election/${election._id}/vote?startDate=${election.startDate}?endDate=${election.endDate}`
-    );
+    navigate(`/election/${election._id}/vote`, {
+      state: {
+        Ename: election.name,
+        startDate: election.startDate,
+        endDate: election.endDate,
+      },
+    });
     if (window.innerWidth > 768) {
       window.scrollTo(0, 0);
     }
     setIsCollapsed(true);
-    toast.info(election.name)
   };
 
   const handleLogout = () => {
@@ -76,9 +78,6 @@ export default function VoterSideBar() {
     navigate("/");
   };
 
-  if (loading) {
-    return <Loader />;
-  }
   return (
     <div>
       <Sidebar className="w-full md:w-60">
