@@ -14,24 +14,24 @@ import AdminSidebar from "./AdminSidebar";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { storage } from "../../firebase/firebase";
 import axios from "axios";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
+import moment from "moment";
 import {
   setDeclareElection,
   selectElectionById,
   deleteElection,
-  selectElectionByIdFromList,
 } from "../../redux/electionSlice";
 import { toast } from "react-toastify";
+import Loader from "../Loader";
 
 export default function AdminDashBoard() {
   const { id } = useParams();
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const location = useLocation();
   const election = useSelector((state) => selectElectionById(state, id));
-  const electionDetails = useSelector((state) =>
-    selectElectionByIdFromList(state, id)
-  );
+  const {Ename, startDate, endDate } = location.state || {};
   const [candidates, setCandidates] = useState([]);
   const [openCreateModal, setOpenCreateModal] = useState(false);
   const [openDeleteModal, setOpenDeleteModal] = useState(false);
@@ -205,28 +205,41 @@ export default function AdminDashBoard() {
     }
   };
 
+  if(loading){
+    return <Loader/>;
+  }
   return (
     <div className="flex flex-col md:flex-row">
       <AdminSidebar className="h-full md:w-60" />
       <div className="flex flex-col flex-grow cursor-default">
         <div>
-          <div className="flex justify-between mt-1 mb-2 p-4 bg-slate-300 dark:bg-slate-700 rounded-md">
-            {election?.declared ? (
-              <div className="py-2 px-6 dark:bg-slate-800  bg-slate-100 text-green-600 font-semibold rounded-lg border dark:border-white border-black">
-                Declared
-              </div>
-            ) : (
-              <Button color="success" size="md" onClick={handleDeclareResult}>
-                Declare Result
+          <div className="flex justify-between items-center mt-1 mb-2 p-4 bg-slate-300 dark:bg-slate-700 rounded-md">
+            <div className="text-center">
+              <h1 className="text-sm sm:text-lg md:text-xl lg:text-2xl font-semibold font-mono text-stone-900 dark:text-white">
+                {Ename}
+              </h1>
+              <p className="text-xs sm:text-sm font-light md:text-lg text-stone-700 dark:text-stone-400">
+                {moment(startDate).format("DD/MM/YYYY")} -{" "}
+                {moment(endDate).format("DD/MM/YYYY")}
+              </p>
+            </div>
+            <div className="flex gap-2">
+              {election?.declared ? (
+                <div className="py-2 px-3 dark:bg-slate-800  bg-slate-100 text-green-600 font-semibold rounded-lg border dark:border-white border-black">
+                  Declared
+                </div>
+              ) : (
+                <Button color="success" onClick={handleDeclareResult}>
+                  Declare
+                </Button>
+              )}
+              <Button
+                onClick={() => setDeleteElectionModal(true)}
+                color="failure"
+              >
+                Delete
               </Button>
-            )}
-            <Button
-              onClick={() => setDeleteElectionModal(true)}
-              color="failure"
-              size="md"
-            >
-              Delete Election
-            </Button>
+            </div>
           </div>
           {candidates.length === 0 ? (
             <div className="flex flex-col text-center items-center mt-6 gap-2 bg-gray-400 m-2 p-6 md:p-12 dark:bg-slate-950">

@@ -36,11 +36,11 @@ export const {
 export const selectElectionById = (state, electionID) =>
   state.election.elections[electionID];
 
-export const selectElectionByIdFromList = (state, electionID) => {
-  return state.election.electionList.find(
-    (election) => election._id === electionID
-  );
-};
+// export const selectElectionByIdFromList = (state, electionID) => {
+//   return state.election.electionList.find(
+//     (election) => election._id === electionID
+//   );
+// };
 
 export const selectElectionList = (state) => state.election.electionList;
 

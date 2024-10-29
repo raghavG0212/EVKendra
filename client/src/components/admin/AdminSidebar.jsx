@@ -76,13 +76,18 @@ export default function AdminSidebar() {
     }
   };
 
-  const handleNavigation = (path, name) => {
-    navigate(path);
+  const handleNavigation = (path, election) => {
+     navigate(path, {
+       state: {
+         Ename: election.name,
+         startDate: election.startDate,
+         endDate: election.endDate,
+       },
+     });
     if (window.innerWidth > 768) {
       window.scrollTo(0, 0);
     }
     setIsCollapsed(true);
-    toast.info(name);
   };
 
   const handleLogout = () => {
@@ -164,7 +169,7 @@ export default function AdminSidebar() {
                       onClick={() =>
                         handleNavigation(
                           `/election/${election._id}/candidates`,
-                          election.name
+                          election
                         )
                       }
                       icon={CiCircleList}

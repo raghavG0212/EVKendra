@@ -36,6 +36,7 @@ import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import Heading from "../Heading";
 import { deleteElection, setElections } from "../../redux/electionSlice";
+import Loader from "../Loader";
 
 ChartJS.register(
   ArcElement,
@@ -240,11 +241,19 @@ export default function AdminMainDash() {
   };
 
   const NavigateToElection = (election) => {
-    navigate(`/election/${election._id}/candidates`);
+    navigate(`/election/${election._id}/candidates`, {
+      state: {
+        Ename: election.name,
+        startDate: election.startDate,
+        endDate: election.endDate,
+      },
+    });
     window.scroll(0, 0);
-    toast.info(election.name);
   };
 
+  if (loading) {
+    return <Loader />;
+  }
   return (
     <div className="flex flex-col md:flex-row min-h-screen cursor-default ">
       <AdminSidebar className="h-full md:w-60" />
@@ -335,7 +344,7 @@ export default function AdminMainDash() {
 
         <Heading heading="Election Overview" />
 
-        <div className="grid grid-cols-1 450px:grid-cols-2 1016px:grid-cols-3 gap-3 m-4 p-3 italic font-serif">
+        <div className="grid grid-cols-1 450px:grid-cols-2 1016px:grid-cols-3 xl:grid-cols-4 gap-3 m-4 p-3 italic font-serif">
           <Card className="text-center text-2xl lg:text-3xl bg-slate-100 mb-3 sm:mb-0">
             <h1>upcoming</h1>
             <div className="flex justify-center text-5xl">
