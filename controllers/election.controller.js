@@ -99,7 +99,7 @@ const editElection = async (req, res) => {
     if(new Date()> new Date(endDate)){
        return res
          .status(400)
-         .json({ message: "Cannot edit details of ended election" });
+         .json({ message: "Minimum 1 day window required after editing" });
     }
     if (new Date() <= new Date(startDate)) {
       existingElection.startDate = startDate;

@@ -19,6 +19,8 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   setDeclareElection,
   selectElectionById,
+  deleteElection,
+  selectElectionByIdFromList,
 } from "../../redux/electionSlice";
 import { toast } from "react-toastify";
 
@@ -27,6 +29,9 @@ export default function AdminDashBoard() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const election = useSelector((state) => selectElectionById(state, id));
+  const electionDetails = useSelector((state) =>
+    selectElectionByIdFromList(state, id)
+  );
   const [candidates, setCandidates] = useState([]);
   const [openCreateModal, setOpenCreateModal] = useState(false);
   const [openDeleteModal, setOpenDeleteModal] = useState(false);
@@ -76,6 +81,7 @@ export default function AdminDashBoard() {
       const response = await axios.delete(
         `/api/v1/election/delete-election/${id}`
       );
+      dispatch(deleteElection(id));
       setDeleteElectionModal(false);
       navigate("/admin-dashboard");
       toast.success(response.data.message);

@@ -4,45 +4,29 @@ import { FaPerson } from "react-icons/fa6";
 import { GiVote } from "react-icons/gi";
 import { CiCircleList } from "react-icons/ci";
 import { logout } from "../../redux/authSlice";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useLocation, Link, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { IoCreateSharp, IoExitOutline, IoListSharp } from "react-icons/io5";
 import { toast } from "react-toastify";
 import Loader from "../Loader";
+import { setElections } from "../../redux/electionSlice";
 
 export default function AdminSidebar() {
   const location = useLocation();
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const [elections, setElections] = useState([]);
+  const elections = useSelector((state) => state.election.electionList);
   const [loading, setLoading] = useState(false);
   const [createElectionModal, setCreateElectionModal] = useState(false);
-  const [isOpen , setIsOpen] = useState(true);
+  const [isOpen, setIsOpen] = useState(true);
   const [isCollapsed, setIsCollapsed] = useState(true);
   const [name, setName] = useState("");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const today = new Date();
 
-  useEffect(() => {
-    const fetchElections = async () => {
-      try {
-        setLoading(true);
-        const response = await axios.get("/api/v1/election/getAll");
-        setElections(response.data);
-      } catch (err) {
-        toast.error("Failed to load elections");
-      } finally {
-        setTimeout(() => {
-          setLoading(false);
-        }, 800);
-      }
-    };
-    fetchElections();
-  }, []);
-  
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth >= 768) {
@@ -56,8 +40,25 @@ export default function AdminSidebar() {
     };
   }, []);
 
+  useEffect(() => {
+    const fetchElections = async () => {
+      try {
+        const updatedElections = await axios.get(`/api/v1/election/getAll`);
+        dispatch(setElections(updatedElections.data));
+      } catch (err) {
+        console.error("Failed to fetch elections:", err);
+      }
+    };
+
+    fetchElections();
+  }, [dispatch]);
+
   const handleAddElection = async () => {
     setLoading(true);
+    if (name === "" || startDate === "" || endDate === "") {
+      setLoading(false);
+      return toast.error("Fill all details");
+    }
     try {
       const response = await axios.post("/api/v1/election/create-election", {
         name,
@@ -65,7 +66,7 @@ export default function AdminSidebar() {
         endDate,
       });
       const updatedElections = await axios.get(`/api/v1/election/getAll`);
-      setElections(updatedElections.data);
+      dispatch(setElections(updatedElections.data));
       setCreateElectionModal(false);
       toast.success(response.data.message);
     } catch (err) {
@@ -144,52 +145,58 @@ export default function AdminSidebar() {
               </Button>
             </Sidebar.Item>
             <div className="h-[3px] w-full bg-gradient-to-r from-slate-200 via-slate-300 to-slate-500 dark:from-slate-400 dark:via-slate-500 dark:to-slate-700" />
-            <Sidebar.Collapse
-              icon={GiVote}
-              label="Elections"
-              open={!isCollapsed}
-              onClick={() => {
-                setIsCollapsed((prev) => !prev);
-              }}
-            >
-              {elections
-                .sort((a, b) => new Date(a.startDate) - new Date(b.startDate))
-                .map((election, index) => (
-                  <Sidebar.Item
-                    key={election._id}
-                    as="button"
-                    onClick={() =>
-                      handleNavigation(`/election/${election._id}/candidates`,election.name)
-                    }
-                    icon={CiCircleList}
-                    active={
-                      location.pathname ===
-                      `/election/${election._id}/candidates`
-                    }
-                  >
-                    <div className="flex flex-col text-start text-wrap">
-                      {election.name}
-                      {new Date(election.startDate) > today ? (
-                        <div className="relative flex items-center font-bold text-green-500">
-                          <span className="mr-3 font-semibold">Upcoming</span>
-                        </div>
-                      ) : new Date(election.endDate) < today ? (
-                        <div className="relative flex items-center font-bold text-gray-400">
-                          <span className="mr-3 font-semibold">Ended</span>
-                        </div>
-                      ) : (
-                        <div className="flex items-center font-bold text-red-600">
-                          <span className="mr-3 font-semibold">Live</span>
-                          <span className=" w-2 h-2 bg-red-600 rounded-full animate-pulse mt-[3.5px]"></span>
-                        </div>
+            {elections.length > 0 && (
+              <Sidebar.Collapse
+                icon={GiVote}
+                label="Elections"
+                open={!isCollapsed}
+                onClick={() => {
+                  setIsCollapsed((prev) => !prev);
+                }}
+              >
+                {elections
+                  .slice()
+                  .sort((a, b) => new Date(a.startDate) - new Date(b.startDate))
+                  .map((election, index) => (
+                    <Sidebar.Item
+                      key={election._id}
+                      as="button"
+                      onClick={() =>
+                        handleNavigation(
+                          `/election/${election._id}/candidates`,
+                          election.name
+                        )
+                      }
+                      icon={CiCircleList}
+                      active={
+                        location.pathname ===
+                        `/election/${election._id}/candidates`
+                      }
+                    >
+                      <div className="flex flex-col text-start text-wrap">
+                        {election.name}
+                        {new Date(election.startDate) > today ? (
+                          <div className="relative flex items-center font-bold text-green-500">
+                            <span className="mr-3 font-semibold">Upcoming</span>
+                          </div>
+                        ) : new Date(election.endDate) < today ? (
+                          <div className="relative flex items-center font-bold text-gray-400">
+                            <span className="mr-3 font-semibold">Ended</span>
+                          </div>
+                        ) : (
+                          <div className="flex items-center font-bold text-red-600">
+                            <span className="mr-3 font-semibold">Live</span>
+                            <span className=" w-2 h-2 bg-red-600 rounded-full animate-pulse mt-[3.5px]"></span>
+                          </div>
+                        )}
+                      </div>
+                      {index + 1 < elections.length && (
+                        <div className="h-[3px] w-full bg-gradient-to-r from-slate-200 via-slate-300 to-slate-500 dark:from-slate-400 dark:via-slate-500 dark:to-slate-700 mt-2" />
                       )}
-                    </div>
-                    {index + 1 < elections.length && (
-                      <div className="h-[3px] w-full bg-gradient-to-r from-slate-200 via-slate-300 to-slate-500 dark:from-slate-400 dark:via-slate-500 dark:to-slate-700 mt-2" />
-                    )}
-                  </Sidebar.Item>
-                ))}
-            </Sidebar.Collapse>
+                    </Sidebar.Item>
+                  ))}
+              </Sidebar.Collapse>
+            )}
             <div className="h-[3px] w-full bg-gradient-to-r from-slate-200 via-slate-300 to-slate-500 dark:from-slate-400 dark:via-slate-500 dark:to-slate-700" />
             <Sidebar.Item
               as={Link}
@@ -219,29 +226,33 @@ export default function AdminSidebar() {
         <Modal.Header>Create Election</Modal.Header>
         <Modal.Body>
           <div className="space-y-4">
-            <div>
+            <div className="space-y-2">
               <Label htmlFor="name" value="Election Name" />
               <TextInput
                 id="name"
+                type="text"
+                required
                 placeholder="Enter election name"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
               />
             </div>
-            <div>
+            <div className="space-y-2">
               <Label htmlFor="startDate" value="Start Date" />
               <TextInput
                 id="startDate"
                 type="date"
+                required
                 value={startDate}
                 onChange={(e) => setStartDate(e.target.value)}
               />
             </div>
-            <div>
+            <div className="space-y-2">
               <Label htmlFor="endDate" value="End Date" />
               <TextInput
                 id="endDate"
                 type="date"
+                required
                 value={endDate}
                 onChange={(e) => setEndDate(e.target.value)}
               />

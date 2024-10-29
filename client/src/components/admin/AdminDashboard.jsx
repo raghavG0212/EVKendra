@@ -21,7 +21,7 @@ import { Line } from "react-chartjs-2";
 import axios from "axios";
 import AdminSidebar from "./AdminSidebar";
 import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { RiDeleteBin2Line, RiAdminLine } from "react-icons/ri";
 import { HiOutlineExclamationCircle, HiOutlinePencil } from "react-icons/hi";
 import {
@@ -33,8 +33,9 @@ import {
 } from "react-icons/md";
 import { GiVote } from "react-icons/gi";
 import { toast } from "react-toastify";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import Heading from "../Heading";
+import { deleteElection, setElections } from "../../redux/electionSlice";
 
 ChartJS.register(
   ArcElement,
@@ -48,7 +49,8 @@ ChartJS.register(
 
 export default function AdminMainDash() {
   const navigate = useNavigate();
-  const [elections, setElections] = useState([]);
+  const dispatch = useDispatch();
+  const elections = useSelector((state) => state.election.electionList);
   const currentUser = useSelector((state) => state.auth.currentUser);
   const [admins, setAdmins] = useState([]);
   const [creator, setCreator] = useState(null);
@@ -131,21 +133,6 @@ export default function AdminMainDash() {
     },
   };
 
-  const fetchElections = async () => {
-    try {
-      setLoading(true);
-      const response = await axios.get("/api/v1/election/getAll");
-      setElections(response.data);
-    } catch (err) {
-      toast.error("Failed to load elections");
-    } finally {
-      setLoading(false);
-    }
-  };
-  useEffect(() => {
-    fetchElections();
-  }, []);
-
   const upcomingElections = elections.filter(
     (election) => new Date(election.startDate) > today
   );
@@ -174,6 +161,19 @@ export default function AdminMainDash() {
     };
     countVoters();
   }, []);
+
+  const fetchElections = async () => {
+    try {
+      const updatedElections = await axios.get(`/api/v1/election/getAll`);
+      dispatch(setElections(updatedElections.data));
+    } catch (err) {
+      console.error("Failed to fetch elections:", err);
+    }
+  };
+
+  useEffect(() => {
+    fetchElections();
+  }, [dispatch]);
 
   const handleAdminDelete = async () => {
     setLoading(true);
@@ -212,7 +212,6 @@ export default function AdminMainDash() {
         `/api/v1/election/edit-election/${electionToEdit}`,
         updatedElection
       );
-
       await fetchElections();
       toast.success(response.data.message || "Details updated successfully");
       setElectionEditModal(false);
@@ -229,10 +228,9 @@ export default function AdminMainDash() {
       const response = await axios.delete(
         `/api/v1/election/delete-election/${electionToDelete}`
       );
+      dispatch(deleteElection(electionToDelete));
+      await fetchElections();
       setElectionDeleteModal(false);
-      setElections((prevElections) =>
-        prevElections.filter((election) => election._id !== electionToDelete)
-      );
       toast.success(response.data.message);
     } catch (err) {
       toast.error(err.response?.data?.message || "Failed to delete election.");
@@ -241,11 +239,11 @@ export default function AdminMainDash() {
     }
   };
 
-  const NavigateToElection =(election)=>{
+  const NavigateToElection = (election) => {
     navigate(`/election/${election._id}/candidates`);
-    window.scroll(0,0);
+    window.scroll(0, 0);
     toast.info(election.name);
-  }
+  };
 
   return (
     <div className="flex flex-col md:flex-row min-h-screen cursor-default ">
@@ -382,9 +380,13 @@ export default function AdminMainDash() {
             </Table.Head>
             <Table.Body className="divide-y">
               {elections
+                .slice()
                 .sort((a, b) => new Date(a.startDate) - new Date(b.startDate))
                 .map((election) => (
-                  <Table.Row key={election._id} className="hover:bg-slate-200 dark:hover:bg-slate-900">
+                  <Table.Row
+                    key={election._id}
+                    className="hover:bg-slate-200 dark:hover:bg-slate-900"
+                  >
                     <Table.Cell
                       className="font-semibold hover:underline text-wrap cursor-pointer"
                       onClick={() => NavigateToElection(election)}
