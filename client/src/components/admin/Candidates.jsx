@@ -214,15 +214,17 @@ export default function AdminDashBoard() {
       <div className="flex flex-col flex-grow cursor-default">
         <div>
           <div className="flex justify-between items-center mt-1 mb-2 p-4 bg-slate-300 dark:bg-slate-700 rounded-md">
-            <div className="text-center">
-              <h1 className="text-sm sm:text-lg md:text-xl lg:text-2xl font-semibold font-mono text-stone-900 dark:text-white">
-                {Ename}
-              </h1>
-              <p className="text-xs sm:text-sm font-light md:text-lg text-stone-700 dark:text-stone-400">
-                {moment(startDate).format("DD/MM/YYYY")} -{" "}
-                {moment(endDate).format("DD/MM/YYYY")}
-              </p>
-            </div>
+            {Ename !== undefined && startDate !== undefined && endDate !== undefined ? (
+              <div className="text-center">
+                <h1 className="text-sm sm:text-lg md:text-xl lg:text-2xl font-semibold font-mono text-stone-900 dark:text-white">
+                  {Ename}
+                </h1>
+                <p className="text-xs sm:text-sm font-light md:text-lg text-stone-700 dark:text-stone-400">
+                  {moment(startDate).format("DD/MM/YYYY")} -{" "}
+                  {moment(endDate).format("DD/MM/YYYY")}
+                </p>
+              </div>
+            ) : (<div/>)}
             <div className="flex gap-2">
               {election?.declared ? (
                 <div className="py-2 px-3 dark:bg-slate-800  bg-slate-100 text-green-600 font-semibold rounded-lg border dark:border-white border-black">

@@ -34,12 +34,7 @@ export default function Results() {
     <div>
       <Heading heading="results" />
 
-      {loading ? (
-        <div className="flex justify-center text-2xl space-x-2 cursor-default">
-          <Spinner size="xl" />
-          <span className="mt-1">Loading...</span>
-        </div>
-      ) : elections.length === 0 ? (
+     { elections.length === 0 ? (
         <div className="flex flex-col justify-center items-center m-16 p-10 bg-red-600 dark:bg-inherit bg-opacity-30 cursor-default border border-slate-200 dark:border-teal-600 dark:bg-gray-800 rounded ">
           <HiExclamationCircle className="text-6xl mb-2" />
           <h1 className=" text-lg sm:text-2xl text-center text-nowrap">
