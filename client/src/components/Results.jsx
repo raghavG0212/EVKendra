@@ -65,8 +65,8 @@ export default function Results() {
               />
               <img src="/podium.png" />
               <div className="absolute bottom-6 right-0">
-                <img src="/stamp.png" className="h-32 w-32" />
-                <span className="absolute bottom-[44px] right-2 rotate-[-25deg] font-medium text-xl uppercase bg-red-700 text-white rounded-xl p-1 ">
+                <img src="/stamp.png" className="h-32 w-32 animate-spin" />
+                <span className="absolute bottom-[44px] right-2 rotate-[-25deg] font-medium text-xl uppercase bg-red-700 text-white rounded-xl p-1 animate-pulse">
                   {election.result.majority ? "majority" : "plurality"}{" "}
                 </span>
               </div>
