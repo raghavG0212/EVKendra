@@ -14,10 +14,8 @@ import { FaCheckCircle } from "react-icons/fa";
 import { toast } from "react-toastify";
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 import { BsExclamationCircle } from "react-icons/bs";
-import { FaCross } from "react-icons/fa6";
-import { RiCrossLine } from "react-icons/ri";
 import { GiCrossMark } from "react-icons/gi";
-import { MdDone } from "react-icons/md";
+import { MdDone, MdDoneAll } from "react-icons/md";
 
 export default function Login() {
   const [formData, setFormData] = useState({
@@ -38,6 +36,8 @@ export default function Login() {
   const [showModal, setShowModal] = useState(false);
   const [vIDShow, setVIDShow] = useState("");
   const [showPassword, setShowPassword] = useState(true);
+  const reqMet =
+    eligible.dob && eligible.phoneNo && eligible.aadharNo && eligible.password;
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -63,11 +63,6 @@ export default function Login() {
       password: updatedFormData.password.length >= 8,
     });
   };
-
-  console.log(eligible.dob);
-  console.log(eligible.phoneNo);
-  console.log(eligible.aadharNo);
-  console.log(eligible.password);
 
   const handleSignup = async (e) => {
     e.preventDefault();
@@ -206,29 +201,7 @@ export default function Login() {
               </div>
             </div>
           </div>
-          <div className="sm:flex sm:space-x-14">
-            <div className="sm:mt-2 sm:mr-1">
-              <Label
-                className="text-md"
-                htmlFor="nationality"
-                value="Nationality"
-              />
-            </div>
-            <Select
-              id="nationality"
-              required
-              value={formData.nationality}
-              onChange={handleChange}
-              className="w-80 sm:w-64"
-            >
-              <option value="" disabled>
-                Select your nationality
-              </option>
-              <option value="Indian">Indian</option>
-              <option value="American">American</option>
-              <option value="British">British</option>
-            </Select>
-          </div>
+          
           <div className="flex gap-2 mt-3">
             <Checkbox id="remember" className="mt-1" />
             <Label htmlFor="remember" className="text-md">
@@ -252,71 +225,114 @@ export default function Login() {
           </Button>
         </form>
         <div
-          className={`p-4 mt-3 rounded-md ${
-            eligible.dob &&
-            eligible.aadharNo &&
-            eligible.phoneNo &&
-            eligible.password
-              ? "bg-green-200"
-              : "bg-red-200"
+          className={`p-4 mt-3 rounded-md transition-all duration-200 ease-in-out overflow-hidden transform ${
+            reqMet ? "bg-green-200" : "bg-red-200"
+          } ${
+            formData.dob ||
+            formData.aadharNo ||
+            formData.phoneNo ||
+            formData.password
+              ? "max-h-96 opacity-100 scale-100"
+              : "max-h-0 opacity-0 scale-95"
           }`}
         >
-          <div className={`flex flex-row gap-2  text-red-600 items-center`}>
-            <BsExclamationCircle className=" size-5 mt-0.5" />
-            <div className="capitalize font-semibold text-xl">Requirements</div>
-          </div>
+          {reqMet ? (
+            <div className={`flex flex-row gap-2  text-green-600 items-center`}>
+              <MdDoneAll className=" size-5 mt-0.5" />
+              <div className="capitalize font-semibold text-xl">
+                All Validations Done
+              </div>
+            </div>
+          ) : (
+            <div className={`flex flex-row gap-2  text-red-600 items-center`}>
+              <BsExclamationCircle className=" size-5 mt-0.5" />
+              <div className="capitalize font-semibold text-xl">
+                Requirements
+              </div>
+            </div>
+          )}
           <div className="mt-5 font-medium flex flex-col ">
-            {eligible.dob ? (
-              <div className="flex flex-row items-center gap-3 text-green-600">
-                <MdDone className="mt-0.5" />
-                <span className="text-[19px]">Age 18+</span>
-              </div>
+            {formData.dob ? (
+              <>
+                {eligible.dob ? (
+                  <div className="flex flex-row items-center gap-3 text-green-600">
+                    <MdDone className="mt-0.5" />
+                    <span className="text-[19px]">Age 18+</span>
+                  </div>
+                ) : (
+                  <div className="flex flex-row items-center gap-3 text-red-600">
+                    <GiCrossMark className="mt-0.5" />
+                    <span className="text-[19px]">Age 18+</span>
+                  </div>
+                )}
+              </>
             ) : (
-              <div className="flex flex-row items-center gap-3 text-red-600">
-                <GiCrossMark className="mt-0.5" />
-                <span className="text-[19px]">Age 18+</span>
-              </div>
+              <></>
             )}
-            {eligible.phoneNo ? (
-              <div className="flex flex-row items-center gap-3 text-green-600">
-                <MdDone className="mt-0.5" />
-                <span className="text-[19px]">
-                  Phone no. must be of 10 digits
-                </span>
-              </div>
+            {formData.phoneNo ? (
+              <>
+                {" "}
+                {eligible.phoneNo ? (
+                  <div className="flex flex-row items-center gap-3 text-green-600">
+                    <MdDone className="mt-0.5" />
+                    <span className="text-[19px]">
+                      Phone no. must be of 10 digits
+                    </span>
+                  </div>
+                ) : (
+                  <div className="flex flex-row items-center gap-3 text-red-600">
+                    <GiCrossMark className="mt-0.5" />
+                    <span className="text-[19px]">
+                      Phone no. must be of 10 digits
+                    </span>
+                  </div>
+                )}
+              </>
             ) : (
-              <div className="flex flex-row items-center gap-3 text-red-600">
-                <GiCrossMark className="mt-0.5" />
-                <span className="text-[19px]">
-                  Phone no. must be of 10 digits
-                </span>
-              </div>
+              <></>
             )}
-            {eligible.aadharNo ? (
-              <div className="flex flex-row items-center gap-3 text-green-600">
-                <MdDone className="mt-0.5" />
-                <span className="text-[19px]">
-                  Aadhar no. must be of 12 digits
-                </span>
-              </div>
+            {formData.aadharNo ? (
+              <>
+                {eligible.aadharNo ? (
+                  <div className="flex flex-row items-center gap-3 text-green-600">
+                    <MdDone className="mt-0.5" />
+                    <span className="text-[19px]">
+                      Aadhar no. must be of 12 digits
+                    </span>
+                  </div>
+                ) : (
+                  <div className="flex flex-row items-center gap-3 text-red-600">
+                    <GiCrossMark className="mt-0.5" />
+                    <span className="text-[19px]">
+                      Aadhar no. must be of 12 digits
+                    </span>
+                  </div>
+                )}
+              </>
             ) : (
-              <div className="flex flex-row items-center gap-3 text-red-600">
-                <GiCrossMark className="mt-0.5" />
-                <span className="text-[19px]">
-                  Aadhar no. must be of 12 digits
-                </span>
-              </div>
+              <></>
             )}
-            {eligible.password ? (
-              <div className="flex flex-row items-center gap-3 text-green-600">
-                <MdDone className="mt-0.5" />
-                <span className="text-[19px]">Password length must be 8+</span>
-              </div>
+            {formData.password ? (
+              <>
+                {" "}
+                {eligible.password ? (
+                  <div className="flex flex-row items-center gap-3 text-green-600">
+                    <MdDone className="mt-0.5" />
+                    <span className="text-[19px]">
+                      Password length must be 8+
+                    </span>
+                  </div>
+                ) : (
+                  <div className="flex flex-row items-center gap-3 text-red-600">
+                    <GiCrossMark className="mt-0.5" />
+                    <span className="text-[19px]">
+                      Password length must be 8+
+                    </span>
+                  </div>
+                )}
+              </>
             ) : (
-              <div className="flex flex-row items-center gap-3 text-red-600">
-                <GiCrossMark className="mt-0.5" />
-                <span className="text-[19px]">Password length must be 8+</span>
-              </div>
+              <></>
             )}
           </div>
         </div>
