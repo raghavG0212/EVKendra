@@ -5,7 +5,6 @@ import {
   Checkbox,
   Label,
   TextInput,
-  Select,
   Spinner,
   Modal,
 } from "flowbite-react";
@@ -13,9 +12,9 @@ import { Link } from "react-router-dom";
 import { FaCheckCircle } from "react-icons/fa";
 import { toast } from "react-toastify";
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
-import { BsExclamationCircle } from "react-icons/bs";
 import { GiCrossMark } from "react-icons/gi";
 import { MdDone, MdDoneAll } from "react-icons/md";
+import { LiaExclamationSolid } from "react-icons/lia";
 
 export default function Login() {
   const [formData, setFormData] = useState({
@@ -201,7 +200,7 @@ export default function Login() {
               </div>
             </div>
           </div>
-          
+
           <div className="flex gap-2 mt-3">
             <Checkbox id="remember" className="mt-1" />
             <Label htmlFor="remember" className="text-md">
@@ -239,16 +238,12 @@ export default function Login() {
           {reqMet ? (
             <div className={`flex flex-row gap-2  text-green-600 items-center`}>
               <MdDoneAll className=" size-5 mt-0.5" />
-              <div className="capitalize font-semibold text-xl">
-                All Validations Done
-              </div>
+              <div className="capitalize font-semibold text-xl">Good to go</div>
             </div>
           ) : (
-            <div className={`flex flex-row gap-2  text-red-600 items-center`}>
-              <BsExclamationCircle className=" size-5 mt-0.5" />
-              <div className="capitalize font-semibold text-xl">
-                Requirements
-              </div>
+            <div className={`flex flex-row   text-red-600 items-center`}>
+              <div className="font-semibold text-xl">Hey User</div>
+              <LiaExclamationSolid className=" size-5 mt-0.5" />
             </div>
           )}
           <div className="mt-5 font-medium flex flex-col ">
