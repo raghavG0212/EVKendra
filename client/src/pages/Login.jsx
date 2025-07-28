@@ -77,88 +77,94 @@ export default function Login() {
           className="size-full shadow-sm shadow-blue-500"
         />
       </div>
-      <div className="text-center lg:mr-20 lg:ml-4">
-        <div className="font-medium text-4xl mb-10 mt-6 capitalize flex flex-col">
-          <span>Welcome back</span>
-          <span className="text-blue-600 italic">sign in your account</span>
-        </div>
-        <form
-          onSubmit={handleLogin}
-          className="flex flex-col gap-4 mt-4 items-center sm:items-start"
-        >
-          <div className="sm:flex sm:space-x-8">
-            <div className="mt-2 mb-4 sm:mb-0">
-              <Label
-                htmlFor="Identifier"
-                value="Aadhar No or Voter ID"
-                className="text-md"
-              />
-            </div>
-            <TextInput
-              id="identifier"
-              type="text"
-              placeholder="Your Aadhar No or Voter ID"
-              value={formData.identifier}
-              onChange={handleChange}
-              required
-              className="w-80 sm:w-64"
-            />
+      <div className="flex flex-grow justify-center">
+        <div className="text-center">
+          <div className="font-medium text-4xl mb-10 mt-6 capitalize flex flex-col">
+            <span>Welcome back</span>
+            <span className="text-blue-600 italic">sign in your account</span>
           </div>
-          <div className="sm:flex sm:space-x-32 sm:mt-4 ">
-            <div className="mt-2 mb-4 sm:mb-0">
-              <Label htmlFor="password" value="Password" className="text-md" />
-            </div>
-            <div className="relative w-80 sm:w-64">
-              <input
-                id="password"
-                type={!showPassword ? "text" : "password"}
-                placeholder="Your Password"
-                required
-                value={formData.password}
+          <form
+            onSubmit={handleLogin}
+            className="flex flex-col gap-4 mt-4 items-center sm:items-start"
+          >
+            <div className="sm:flex sm:space-x-8">
+              <div className="mt-2 mb-4 sm:mb-0">
+                <Label
+                  htmlFor="Identifier"
+                  value="Aadhar No or Voter ID"
+                  className="text-md"
+                />
+              </div>
+              <TextInput
+                id="identifier"
+                type="text"
+                placeholder="Your Aadhar No or Voter ID"
+                value={formData.identifier}
                 onChange={handleChange}
-                className="w-full pr-10 pl-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-cyan-500 focus:border-cyan-500 bg-gray-50 dark:bg-gray-700 dark:placeholder:text-gray-400 placeholder:text-[15px] placeholder:font-sans dark:border-gray-600"
+                required
+                className="w-80 sm:w-64"
               />
-              <div className="absolute inset-y-0 right-3 flex items-center">
-                {showPassword ? (
-                  <AiFillEyeInvisible
-                    className="text-2xl cursor-pointer dark:text-black"
-                    onClick={() => setShowPassword((prevState) => !prevState)}
-                  />
-                ) : (
-                  <AiFillEye
-                    className="text-2xl cursor-pointer dark:text-black"
-                    onClick={() => setShowPassword((prevState) => !prevState)}
-                  />
-                )}
+            </div>
+            <div className="sm:flex sm:space-x-32 sm:mt-4 ">
+              <div className="mt-2 mb-4 sm:mb-0">
+                <Label
+                  htmlFor="password"
+                  value="Password"
+                  className="text-md"
+                />
+              </div>
+              <div className="relative w-80 sm:w-64">
+                <input
+                  id="password"
+                  type={!showPassword ? "text" : "password"}
+                  placeholder="Your Password"
+                  required
+                  value={formData.password}
+                  onChange={handleChange}
+                  className="w-full pr-10 pl-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-cyan-500 focus:border-cyan-500 bg-gray-50 dark:bg-gray-700 dark:placeholder:text-gray-400 placeholder:text-[15px] placeholder:font-sans dark:border-gray-600"
+                />
+                <div className="absolute inset-y-0 right-3 flex items-center">
+                  {showPassword ? (
+                    <AiFillEyeInvisible
+                      className="text-2xl cursor-pointer dark:text-black"
+                      onClick={() => setShowPassword((prevState) => !prevState)}
+                    />
+                  ) : (
+                    <AiFillEye
+                      className="text-2xl cursor-pointer dark:text-black"
+                      onClick={() => setShowPassword((prevState) => !prevState)}
+                    />
+                  )}
+                </div>
               </div>
             </div>
-          </div>
-          <div className="flex gap-2 mt-3">
-            <Checkbox id="remember" className="mt-1" />
-            <Label htmlFor="remember" className="text-md">
-              Remember me
-            </Label>
-          </div>
-          <Button
-            gradientDuoTone="purpleToBlue"
-            type="submit"
-            disabled={loading}
-            className="sm:w-full w-11/12"
-          >
-            {loading ? (
-              <>
-                <Spinner size="sm" />
-                <span className="pl-3">Loading...</span>
-              </>
-            ) : (
-              "Log In"
-            )}
-          </Button>
-        </form>
-        <div className="flex flex-row justify-center mt-3 mb-10">
-          <h1>Not Signed In...?</h1>
-          <div className="text-blue-400 hover:text-blue-700 ml-1">
-            <Link to="/sign-up">Click here</Link>
+            <div className="flex gap-2 mt-3">
+              <Checkbox id="remember" className="mt-1" />
+              <Label htmlFor="remember" className="text-md">
+                Remember me
+              </Label>
+            </div>
+            <Button
+              gradientDuoTone="purpleToBlue"
+              type="submit"
+              disabled={loading}
+              className="sm:w-full w-11/12"
+            >
+              {loading ? (
+                <>
+                  <Spinner size="sm" />
+                  <span className="pl-3">Loading...</span>
+                </>
+              ) : (
+                "Log In"
+              )}
+            </Button>
+          </form>
+          <div className="flex flex-row justify-center mt-3 mb-10">
+            <h1>Not Signed In...?</h1>
+            <div className="text-blue-400 hover:text-blue-700 ml-1">
+              <Link to="/sign-up">Click here</Link>
+            </div>
           </div>
         </div>
       </div>

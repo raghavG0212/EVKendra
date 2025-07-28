@@ -103,238 +103,256 @@ export default function Login() {
           className="size-full shadow-sm shadow-blue-500"
         />
       </div>
-      <div className="lg:mr-20">
-        <div className="text-center font-medium text-4xl mb-10 mt-12 capitalize flex flex-col">
-          <span>Welcome to EVkendra</span>
-          <span className="text-blue-600 italic">create your account</span>
-        </div>
-        <form
-          onSubmit={handleSignup}
-          className="flex flex-col gap-4 mt-4 items-center sm:items-start text-center"
-        >
-          <div className="sm:flex sm:space-x-24">
-            <div className="sm:mt-2 sm:mr-0.5">
-              <Label className="text-md" htmlFor="name" value="Name" />
-            </div>
-            <TextInput
-              id="name"
-              type="text"
-              placeholder="Your name"
-              required
-              value={formData.name}
-              onChange={handleChange}
-              className="w-80 sm:w-64"
-            />
+      <div className="flex flex-grow justify-center">
+        <div>
+          <div className="text-center font-medium text-4xl mb-10 mt-12 capitalize flex flex-col">
+            <span>Welcome to EVkendra</span>
+            <span className="text-blue-600 italic">create your account</span>
           </div>
-          <div className="sm:flex sm:space-x-12">
-            <div className="sm:mt-2 text-nowrap">
-              <Label className="text-md" htmlFor="dob" value="Date of Birth" />
-            </div>
-            <TextInput
-              id="dob"
-              type="date"
-              required
-              value={formData.dob}
-              onChange={handleChange}
-              className="w-80 sm:w-64"
-            />
-          </div>
-          <div className="sm:flex sm:space-x-16">
-            <div className="sm:mt-2 text-nowrap">
-              <Label className="text-md" htmlFor="phoneNo" value="Phone No." />
-            </div>
-            <TextInput
-              id="phoneNo"
-              type="tel"
-              placeholder="Your phone number"
-              required
-              value={formData.phoneNo}
-              onChange={handleChange}
-              className="w-80 sm:w-64"
-            />
-          </div>
-          <div className="sm:flex sm:space-x-14">
-            <div className="sm:mt-2 text-nowrap sm:mr-0.5">
-              <Label
-                className="text-md"
-                htmlFor="aadharNo"
-                value="Aadhar No."
-              />
-            </div>
-            <TextInput
-              id="aadharNo"
-              type="text"
-              placeholder="Your Aadhar number"
-              required
-              value={formData.aadharNo}
-              onChange={handleChange}
-              className="w-80 sm:w-64"
-            />
-          </div>
-          <div className="sm:flex sm:space-x-16">
-            <div className="sm:mt-2 sm:mr-2">
-              <Label className="text-md" htmlFor="password" value="Password" />
-            </div>
-            <div className="relative w-80 sm:w-64">
-              <input
-                id="password"
-                type={!showPassword ? "text" : "password"}
-                placeholder="Your Password"
+          <form
+            onSubmit={handleSignup}
+            className="flex flex-col gap-4 mt-4 items-center sm:items-start text-center"
+          >
+            <div className="sm:flex sm:space-x-24">
+              <div className="sm:mt-2 sm:mr-0.5">
+                <Label className="text-md" htmlFor="name" value="Name" />
+              </div>
+              <TextInput
+                id="name"
+                type="text"
+                placeholder="Your name"
                 required
-                value={formData.password}
+                value={formData.name}
                 onChange={handleChange}
-                className="w-full pr-10 pl-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-cyan-500 focus:border-cyan-500 bg-gray-50 dark:bg-gray-700 dark:placeholder:text-gray-400 placeholder:text-[15px] placeholder:font-sans dark:border-gray-600"
+                className="w-80 sm:w-64"
               />
-              <div className="absolute inset-y-0 right-3 flex items-center">
-                {showPassword ? (
-                  <AiFillEyeInvisible
-                    className="text-2xl cursor-pointer dark:text-black"
-                    onClick={() => setShowPassword((prevState) => !prevState)}
-                  />
-                ) : (
-                  <AiFillEye
-                    className="text-2xl cursor-pointer dark:text-black"
-                    onClick={() => setShowPassword((prevState) => !prevState)}
-                  />
-                )}
+            </div>
+            <div className="sm:flex sm:space-x-12">
+              <div className="sm:mt-2 text-nowrap">
+                <Label
+                  className="text-md"
+                  htmlFor="dob"
+                  value="Date of Birth"
+                />
+              </div>
+              <TextInput
+                id="dob"
+                type="date"
+                required
+                value={formData.dob}
+                onChange={handleChange}
+                className="w-80 sm:w-64"
+              />
+            </div>
+            <div className="sm:flex sm:space-x-16">
+              <div className="sm:mt-2 text-nowrap">
+                <Label
+                  className="text-md"
+                  htmlFor="phoneNo"
+                  value="Phone No."
+                />
+              </div>
+              <TextInput
+                id="phoneNo"
+                type="tel"
+                placeholder="Your phone number"
+                required
+                value={formData.phoneNo}
+                onChange={handleChange}
+                className="w-80 sm:w-64"
+              />
+            </div>
+            <div className="sm:flex sm:space-x-14">
+              <div className="sm:mt-2 text-nowrap sm:mr-0.5">
+                <Label
+                  className="text-md"
+                  htmlFor="aadharNo"
+                  value="Aadhar No."
+                />
+              </div>
+              <TextInput
+                id="aadharNo"
+                type="text"
+                placeholder="Your Aadhar number"
+                required
+                value={formData.aadharNo}
+                onChange={handleChange}
+                className="w-80 sm:w-64"
+              />
+            </div>
+            <div className="sm:flex sm:space-x-16">
+              <div className="sm:mt-2 sm:mr-2">
+                <Label
+                  className="text-md"
+                  htmlFor="password"
+                  value="Password"
+                />
+              </div>
+              <div className="relative w-80 sm:w-64">
+                <input
+                  id="password"
+                  type={!showPassword ? "text" : "password"}
+                  placeholder="Your Password"
+                  required
+                  value={formData.password}
+                  onChange={handleChange}
+                  className="w-full pr-10 pl-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-cyan-500 focus:border-cyan-500 bg-gray-50 dark:bg-gray-700 dark:placeholder:text-gray-400 placeholder:text-[15px] placeholder:font-sans dark:border-gray-600"
+                />
+                <div className="absolute inset-y-0 right-3 flex items-center">
+                  {showPassword ? (
+                    <AiFillEyeInvisible
+                      className="text-2xl cursor-pointer dark:text-black"
+                      onClick={() => setShowPassword((prevState) => !prevState)}
+                    />
+                  ) : (
+                    <AiFillEye
+                      className="text-2xl cursor-pointer dark:text-black"
+                      onClick={() => setShowPassword((prevState) => !prevState)}
+                    />
+                  )}
+                </div>
               </div>
             </div>
-          </div>
 
-          <div className="flex gap-2 mt-3">
-            <Checkbox id="remember" className="mt-1" />
-            <Label htmlFor="remember" className="text-md">
-              Remember me
-            </Label>
-          </div>
-          <Button
-            gradientDuoTone="purpleToBlue"
-            type="submit"
-            disabled={loading}
-            className="w-[100%]"
+            <div className="flex gap-2 mt-3">
+              <Checkbox id="remember" className="mt-1" />
+              <Label htmlFor="remember" className="text-md">
+                Remember me
+              </Label>
+            </div>
+            <Button
+              gradientDuoTone="purpleToBlue"
+              type="submit"
+              disabled={loading}
+              className="w-[100%]"
+            >
+              {loading ? (
+                <>
+                  <Spinner size="sm" />
+                  <span className="pl-3">Loading...</span>
+                </>
+              ) : (
+                "Sign Up"
+              )}
+            </Button>
+          </form>
+          <div
+            className={`p-4 mt-3 rounded-md transition-all duration-200 ease-in-out overflow-hidden transform ${
+              reqMet ? "bg-green-200" : "bg-red-200"
+            } ${
+              formData.dob ||
+              formData.aadharNo ||
+              formData.phoneNo ||
+              formData.password
+                ? "max-h-96 opacity-100 scale-100"
+                : "max-h-0 opacity-0 scale-95"
+            }`}
           >
-            {loading ? (
-              <>
-                <Spinner size="sm" />
-                <span className="pl-3">Loading...</span>
-              </>
+            {reqMet ? (
+              <div
+                className={`flex flex-row gap-2  text-green-600 items-center`}
+              >
+                <MdDoneAll className=" size-5 mt-0.5" />
+                <div className="capitalize font-semibold text-xl">
+                  Good to go
+                </div>
+              </div>
             ) : (
-              "Sign Up"
+              <div className={`flex flex-row   text-red-600 items-center`}>
+                <div className="font-semibold text-xl">Hey User</div>
+                <LiaExclamationSolid className=" size-5 mt-0.5" />
+              </div>
             )}
-          </Button>
-        </form>
-        <div
-          className={`p-4 mt-3 rounded-md transition-all duration-200 ease-in-out overflow-hidden transform ${
-            reqMet ? "bg-green-200" : "bg-red-200"
-          } ${
-            formData.dob ||
-            formData.aadharNo ||
-            formData.phoneNo ||
-            formData.password
-              ? "max-h-96 opacity-100 scale-100"
-              : "max-h-0 opacity-0 scale-95"
-          }`}
-        >
-          {reqMet ? (
-            <div className={`flex flex-row gap-2  text-green-600 items-center`}>
-              <MdDoneAll className=" size-5 mt-0.5" />
-              <div className="capitalize font-semibold text-xl">Good to go</div>
+            <div className="mt-5 font-medium flex flex-col ">
+              {formData.dob ? (
+                <>
+                  {eligible.dob ? (
+                    <div className="flex flex-row items-center gap-3 text-green-600">
+                      <MdDone className="mt-0.5" />
+                      <span className="text-[19px]">Age 18+</span>
+                    </div>
+                  ) : (
+                    <div className="flex flex-row items-center gap-3 text-red-600">
+                      <GiCrossMark className="mt-0.5" />
+                      <span className="text-[19px]">Age 18+</span>
+                    </div>
+                  )}
+                </>
+              ) : (
+                <></>
+              )}
+              {formData.phoneNo ? (
+                <>
+                  {" "}
+                  {eligible.phoneNo ? (
+                    <div className="flex flex-row items-center gap-3 text-green-600">
+                      <MdDone className="mt-0.5" />
+                      <span className="text-[19px]">
+                        Phone no. must be of 10 digits
+                      </span>
+                    </div>
+                  ) : (
+                    <div className="flex flex-row items-center gap-3 text-red-600">
+                      <GiCrossMark className="mt-0.5" />
+                      <span className="text-[19px]">
+                        Phone no. must be of 10 digits
+                      </span>
+                    </div>
+                  )}
+                </>
+              ) : (
+                <></>
+              )}
+              {formData.aadharNo ? (
+                <>
+                  {eligible.aadharNo ? (
+                    <div className="flex flex-row items-center gap-3 text-green-600">
+                      <MdDone className="mt-0.5" />
+                      <span className="text-[19px]">
+                        Aadhar no. must be of 12 digits
+                      </span>
+                    </div>
+                  ) : (
+                    <div className="flex flex-row items-center gap-3 text-red-600">
+                      <GiCrossMark className="mt-0.5" />
+                      <span className="text-[19px]">
+                        Aadhar no. must be of 12 digits
+                      </span>
+                    </div>
+                  )}
+                </>
+              ) : (
+                <></>
+              )}
+              {formData.password ? (
+                <>
+                  {" "}
+                  {eligible.password ? (
+                    <div className="flex flex-row items-center gap-3 text-green-600">
+                      <MdDone className="mt-0.5" />
+                      <span className="text-[19px]">
+                        Password length must be 8+
+                      </span>
+                    </div>
+                  ) : (
+                    <div className="flex flex-row items-center gap-3 text-red-600">
+                      <GiCrossMark className="mt-0.5" />
+                      <span className="text-[19px]">
+                        Password length must be 8+
+                      </span>
+                    </div>
+                  )}
+                </>
+              ) : (
+                <></>
+              )}
             </div>
-          ) : (
-            <div className={`flex flex-row   text-red-600 items-center`}>
-              <div className="font-semibold text-xl">Hey User</div>
-              <LiaExclamationSolid className=" size-5 mt-0.5" />
-            </div>
-          )}
-          <div className="mt-5 font-medium flex flex-col ">
-            {formData.dob ? (
-              <>
-                {eligible.dob ? (
-                  <div className="flex flex-row items-center gap-3 text-green-600">
-                    <MdDone className="mt-0.5" />
-                    <span className="text-[19px]">Age 18+</span>
-                  </div>
-                ) : (
-                  <div className="flex flex-row items-center gap-3 text-red-600">
-                    <GiCrossMark className="mt-0.5" />
-                    <span className="text-[19px]">Age 18+</span>
-                  </div>
-                )}
-              </>
-            ) : (
-              <></>
-            )}
-            {formData.phoneNo ? (
-              <>
-                {" "}
-                {eligible.phoneNo ? (
-                  <div className="flex flex-row items-center gap-3 text-green-600">
-                    <MdDone className="mt-0.5" />
-                    <span className="text-[19px]">
-                      Phone no. must be of 10 digits
-                    </span>
-                  </div>
-                ) : (
-                  <div className="flex flex-row items-center gap-3 text-red-600">
-                    <GiCrossMark className="mt-0.5" />
-                    <span className="text-[19px]">
-                      Phone no. must be of 10 digits
-                    </span>
-                  </div>
-                )}
-              </>
-            ) : (
-              <></>
-            )}
-            {formData.aadharNo ? (
-              <>
-                {eligible.aadharNo ? (
-                  <div className="flex flex-row items-center gap-3 text-green-600">
-                    <MdDone className="mt-0.5" />
-                    <span className="text-[19px]">
-                      Aadhar no. must be of 12 digits
-                    </span>
-                  </div>
-                ) : (
-                  <div className="flex flex-row items-center gap-3 text-red-600">
-                    <GiCrossMark className="mt-0.5" />
-                    <span className="text-[19px]">
-                      Aadhar no. must be of 12 digits
-                    </span>
-                  </div>
-                )}
-              </>
-            ) : (
-              <></>
-            )}
-            {formData.password ? (
-              <>
-                {" "}
-                {eligible.password ? (
-                  <div className="flex flex-row items-center gap-3 text-green-600">
-                    <MdDone className="mt-0.5" />
-                    <span className="text-[19px]">
-                      Password length must be 8+
-                    </span>
-                  </div>
-                ) : (
-                  <div className="flex flex-row items-center gap-3 text-red-600">
-                    <GiCrossMark className="mt-0.5" />
-                    <span className="text-[19px]">
-                      Password length must be 8+
-                    </span>
-                  </div>
-                )}
-              </>
-            ) : (
-              <></>
-            )}
           </div>
-        </div>
-        <div className="flex flex-row justify-center mt-3 mb-10">
-          <h1>Have an account...?</h1>
-          <div className="text-blue-400 hover:text-blue-700 ml-1">
-            <Link to="/login">Click here</Link>
+          <div className="flex flex-row justify-center mt-3 mb-10">
+            <h1>Have an account...?</h1>
+            <div className="text-blue-400 hover:text-blue-700 ml-1">
+              <Link to="/login">Click here</Link>
+            </div>
           </div>
         </div>
       </div>

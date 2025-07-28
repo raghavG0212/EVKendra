@@ -65,115 +65,123 @@ export default function AdminLogin() {
           className="size-full shadow-sm shadow-blue-500"
         />
       </div>
-      <div className="flex items-center justify-center lg:mr-32">
+      <div className="flex flex-grow justify-center items-center">
         <div className="text-center">
-          <div className="font-medium text-4xl mb-20 mt-12 capitalize flex flex-col">
-            <span>Welcome Admin</span>
-            <span className="text-blue-600 italic">log into your account</span>
-          </div>
-          <form
-            className="flex max-w-md flex-col gap-4 mt-4 w-80 items-center sm:items-start"
-            onSubmit={handleSubmit}
-          >
-            <div className="sm:flex space-x-10">
-              <div className="block mt-2">
-                <Label
-                  htmlFor="username"
-                  value="Username"
-                  className="text-md"
-                />
-              </div>
-              <TextInput
-                id="username"
-                type="text"
-                placeholder="Your Name"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                required
-                className="w-80 sm:w-64"
-              />
+          <div className="text-center">
+            <div className="font-medium text-4xl mb-20 mt-12 capitalize flex flex-col">
+              <span>Welcome Admin</span>
+              <span className="text-blue-600 italic">
+                log into your account
+              </span>
             </div>
-            <div className="sm:flex space-x-11">
-              <div className="mt-2 block">
-                <Label
-                  htmlFor="password"
-                  value="Password"
-                  className="text-md"
-                />
-              </div>
-              <div className="relative w-80 sm:w-64">
-                <input
-                  id="password"
-                  type={!showPassword ? "text" : "password"}
-                  placeholder="Your Password"
-                  required
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="w-full pr-10 pl-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-cyan-500 focus:border-cyan-500 bg-gray-50 dark:bg-gray-700 dark:placeholder:text-gray-400 placeholder:text-[15px] placeholder:font-sans dark:border-gray-600"
-                />
-                <div className="absolute inset-y-0 right-3 flex items-center">
-                  {showPassword ? (
-                    <AiFillEyeInvisible
-                      className="text-xl cursor-pointer"
-                      onClick={() => setShowPassword((prevState) => !prevState)}
-                    />
-                  ) : (
-                    <AiFillEye
-                      className="text-xl cursor-pointer"
-                      onClick={() => setShowPassword((prevState) => !prevState)}
-                    />
-                  )}
-                </div>
-              </div>
-            </div>
-            <div className="flex items-center gap-2 mt-4">
-              <Checkbox id="remember" />
-              <Label htmlFor="remember">Remember me</Label>
-            </div>
-            <Button
-              type="submit"
-              gradientDuoTone="purpleToBlue"
-              disabled={loading}
-              className="w-96 ml-8 sm:ml-0"
+            <form
+              className="flex max-w-md flex-col gap-4 mt-4 w-80 items-center sm:items-start"
+              onSubmit={handleSubmit}
             >
-              {loading ? (
-                <>
-                  <Spinner size="sm" />
-                  <span className="pl-3">Loading...</span>
-                </>
-              ) : (
-                "Submit"
-              )}
-            </Button>
-          </form>
-          <div className="flex flex-row justify-center mt-3 mb-10">
-            <h1>Not An Admin...?</h1>
-            <div className="text-blue-400 hover:text-blue-700 ml-1">
-              <Link to="/login">Click here</Link>
-            </div>
-          </div>
-          <Modal show={showModal} size="md" popup onClose={handleModalClose}>
-            <Modal.Header />
-            <Modal.Body>
-              <div className="text-center mx-auto space-y-5">
-                <div className="flex justify-center">
-                  <FaCheckCircle color="green" size="50" />
+              <div className="sm:flex space-x-10">
+                <div className="block mt-2">
+                  <Label
+                    htmlFor="username"
+                    value="Username"
+                    className="text-md"
+                  />
                 </div>
-                <h3 className="mb-5 text-2xl font-semibold">
-                  Login successful!
-                </h3>
-                <div className="justify-center flex">
-                  <Button
-                    gradientDuoTone="tealToLime"
-                    onClick={handleModalClose}
-                    pill
-                  >
-                    OK
-                  </Button>
+                <TextInput
+                  id="username"
+                  type="text"
+                  placeholder="Your Name"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  required
+                  className="w-80 sm:w-64"
+                />
+              </div>
+              <div className="sm:flex space-x-11">
+                <div className="mt-2 block">
+                  <Label
+                    htmlFor="password"
+                    value="Password"
+                    className="text-md"
+                  />
+                </div>
+                <div className="relative w-80 sm:w-64">
+                  <input
+                    id="password"
+                    type={!showPassword ? "text" : "password"}
+                    placeholder="Your Password"
+                    required
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className="w-full pr-10 pl-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-cyan-500 focus:border-cyan-500 bg-gray-50 dark:bg-gray-700 dark:placeholder:text-gray-400 placeholder:text-[15px] placeholder:font-sans dark:border-gray-600"
+                  />
+                  <div className="absolute inset-y-0 right-3 flex items-center">
+                    {showPassword ? (
+                      <AiFillEyeInvisible
+                        className="text-xl cursor-pointer"
+                        onClick={() =>
+                          setShowPassword((prevState) => !prevState)
+                        }
+                      />
+                    ) : (
+                      <AiFillEye
+                        className="text-xl cursor-pointer"
+                        onClick={() =>
+                          setShowPassword((prevState) => !prevState)
+                        }
+                      />
+                    )}
+                  </div>
                 </div>
               </div>
-            </Modal.Body>
-          </Modal>
+              <div className="flex items-center gap-2 mt-4">
+                <Checkbox id="remember" />
+                <Label htmlFor="remember">Remember me</Label>
+              </div>
+              <Button
+                type="submit"
+                gradientDuoTone="purpleToBlue"
+                disabled={loading}
+                className="w-96 ml-8 sm:ml-0"
+              >
+                {loading ? (
+                  <>
+                    <Spinner size="sm" />
+                    <span className="pl-3">Loading...</span>
+                  </>
+                ) : (
+                  "Submit"
+                )}
+              </Button>
+            </form>
+            <div className="flex flex-row justify-center mt-3 mb-10">
+              <h1>Not An Admin...?</h1>
+              <div className="text-blue-400 hover:text-blue-700 ml-1">
+                <Link to="/login">Click here</Link>
+              </div>
+            </div>
+            <Modal show={showModal} size="md" popup onClose={handleModalClose}>
+              <Modal.Header />
+              <Modal.Body>
+                <div className="text-center mx-auto space-y-5">
+                  <div className="flex justify-center">
+                    <FaCheckCircle color="green" size="50" />
+                  </div>
+                  <h3 className="mb-5 text-2xl font-semibold">
+                    Login successful!
+                  </h3>
+                  <div className="justify-center flex">
+                    <Button
+                      gradientDuoTone="tealToLime"
+                      onClick={handleModalClose}
+                      pill
+                    >
+                      OK
+                    </Button>
+                  </div>
+                </div>
+              </Modal.Body>
+            </Modal>
+          </div>
         </div>
       </div>
     </div>
