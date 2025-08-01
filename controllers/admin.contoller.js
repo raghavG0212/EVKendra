@@ -1,6 +1,7 @@
 const AdminModel = require("../models/admin.model");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const dotenv = require("dotenv");
 
 const createAdmin = async (req, res) => {
   try {
@@ -39,9 +40,17 @@ const adminLogin = async (req, res) => {
       return res.status(400).json({ message: "Wrong password" });
     }
 
+    const token = jwt.sign(
+      { id: isAdmin._id, name: isAdmin.name },
+      process.env.JWT_SECRET_KEY,
+      { expiresIn:"1h" }
+    );
+
+
     const {password : _, ...rest} = isAdmin._doc;
     res.status(200).json({
       message: "Login successful",
+      token,
       user: rest,
     });
   } catch (err) {
