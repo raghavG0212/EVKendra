@@ -24,6 +24,7 @@ import {
 } from "../../redux/electionSlice";
 import { toast } from "react-toastify";
 import Loader from "../Loader";
+import { VscDebugBreakpointLogUnverified } from "react-icons/vsc";
 
 export default function Candidates() {
   const { id } = useParams();
@@ -31,7 +32,7 @@ export default function Candidates() {
   const dispatch = useDispatch();
   const location = useLocation();
   const election = useSelector((state) => selectElectionById(state, id));
-  const {Ename, startDate, endDate } = location.state || {};
+  const { Ename, startDate, endDate } = location.state || {};
   const [candidates, setCandidates] = useState([]);
   const [openCreateModal, setOpenCreateModal] = useState(false);
   const [openDeleteModal, setOpenDeleteModal] = useState(false);
@@ -205,8 +206,8 @@ export default function Candidates() {
     }
   };
 
-  if(loading){
-    return <Loader/>;
+  if (loading) {
+    return <Loader />;
   }
   return (
     <div className="flex flex-col md:flex-row">
@@ -214,7 +215,9 @@ export default function Candidates() {
       <div className="flex-grow cursor-default min-h-screen">
         <div className="flex flex-col">
           <div className="flex justify-between items-center mt-1 mb-2 p-4 bg-slate-300 dark:bg-slate-700 rounded-md">
-            {Ename !== undefined && startDate !== undefined && endDate !== undefined ? (
+            {Ename !== undefined &&
+            startDate !== undefined &&
+            endDate !== undefined ? (
               <div className="text-center">
                 <h1 className="text-sm sm:text-lg md:text-xl lg:text-2xl font-semibold font-mono text-stone-900 dark:text-white">
                   {Ename}
@@ -224,7 +227,9 @@ export default function Candidates() {
                   {moment(endDate).format("DD/MM/YYYY")}
                 </p>
               </div>
-            ) : (<div/>)}
+            ) : (
+              <div />
+            )}
             <div className="flex gap-2">
               {election?.declared ? (
                 <div className="py-2 px-3 dark:bg-slate-800  bg-slate-100 text-green-600 font-semibold rounded-lg border dark:border-white border-black">
@@ -357,6 +362,26 @@ export default function Candidates() {
               </Button>
             </div>
           )}
+        </div>
+
+        <div className="m-4 flex p-3 flex-col capitalize border-[3px] border-cyan-600">
+          <h1 className="mb-2 text-red-600">Important notes :-</h1>
+          <span className="flex items-center gap-1">
+            <VscDebugBreakpointLogUnverified className="text-red-600" />
+            live elections can neither be declared nor deleted.
+          </span>
+          <span className="flex items-center gap-1">
+            <VscDebugBreakpointLogUnverified className="text-red-600" />
+            ended elections can either be declared or deleted.
+          </span>
+          <span className="flex items-center gap-1">
+            <VscDebugBreakpointLogUnverified className="text-red-600" />
+            Upcoming elections can only be deleted.
+          </span>
+          <span className="flex items-center gap-1">
+            <VscDebugBreakpointLogUnverified className="text-red-600" />
+            Declaration of elections can only be done once and must be on time.
+          </span>
         </div>
       </div>
 

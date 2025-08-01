@@ -16,6 +16,7 @@ import {
 import { MdOutlineFactCheck } from "react-icons/md";
 import { RiDeleteBin2Line } from "react-icons/ri";
 import { HiOutlineExclamationCircle, HiOutlinePencil } from "react-icons/hi";
+import { VscDebugBreakpointLogUnverified } from "react-icons/vsc";
 import { toast } from "react-toastify";
 import Loader from "../Loader";
 
@@ -152,7 +153,7 @@ export default function AdminElections() {
   }
 
   return (
-    <div className="flex flex-col md:flex-row min-h-screen">
+    <div className="flex flex-col md:flex-row">
       <AdminSidebar className="h-full md:w-60" />
       <div className="flex-grow cursor-default">
         <div className="flex flex-col">
@@ -212,154 +213,173 @@ export default function AdminElections() {
               </div>
             ))}
           </div>
-          <Table className="shadow-md mt-6 mb-16">
-            <Table.Head>
-              <Table.HeadCell className="border-r">Name</Table.HeadCell>
-              <Table.HeadCell className="border-r">
-                Active Period
-              </Table.HeadCell>
-              <Table.HeadCell className="border-r hidden 1016px:table-cell">
-                Candidates
-              </Table.HeadCell>
-              <Table.HeadCell>Actions</Table.HeadCell>
-            </Table.Head>
-            <Table.Body className="divide-y">
-              {filteredElections.length === 0 ? (
-                <tr>
-                  <td
-                    colSpan="4"
-                    className="text-center py-6 text-lg font-semibold text-gray-500"
-                  >
-                    No elections available.
-                  </td>
-                </tr>
-              ) : (
-                paginatedElections.map((election) => (
-                  <Table.Row
-                    key={election._id}
-                    className="hover:bg-slate-200 dark:hover:bg-slate-900"
-                  >
-                    <Table.Cell
-                      className="font-semibold  text-wrap cursor-pointer"
-                      onClick={() => NavigateToElection(election)}
+          <div className="min-h-screen">
+            <Table className="shadow-md mt-6">
+              <Table.Head>
+                <Table.HeadCell className="border-r">Name</Table.HeadCell>
+                <Table.HeadCell className="border-r">
+                  Active Period
+                </Table.HeadCell>
+                <Table.HeadCell className="border-r hidden 1016px:table-cell">
+                  Candidates
+                </Table.HeadCell>
+                <Table.HeadCell>Actions</Table.HeadCell>
+              </Table.Head>
+              <Table.Body className="divide-y">
+                {filteredElections.length === 0 ? (
+                  <tr>
+                    <td
+                      colSpan="4"
+                      className="text-center py-6 text-lg font-semibold text-gray-500"
                     >
-                      <div className="flex items-center">
-                        <span
-                          className={`sm:text-[16px] ${
-                            new Date(election.endDate) < today
-                              ? "text-gray-400"
-                              : new Date(election.startDate) > today
-                              ? "text-green-600"
-                              : "text-red-600 "
-                          }`}
-                        >
-                          {election.name}
-                        </span>
-                         
-                        {election.result?.winner && (
-                          <MdOutlineFactCheck className="text-green-600 dark:text-green-700 text-xl mt-1 mx-4" />
-                        )}
-                        {new Date(election.startDate) < today &&
-                          new Date(election.endDate) > today && (
-                            <div className="size-2 mt-1 animate-pulse rounded-full bg-red-600 mx-1" />
+                      No elections available.
+                    </td>
+                  </tr>
+                ) : (
+                  paginatedElections.map((election) => (
+                    <Table.Row
+                      key={election._id}
+                      className="hover:bg-slate-200 dark:hover:bg-slate-900"
+                    >
+                      <Table.Cell
+                        className="font-semibold  text-wrap cursor-pointer"
+                        onClick={() => NavigateToElection(election)}
+                      >
+                        <div className="flex items-center">
+                          <span
+                            className={`sm:text-[16px] ${
+                              new Date(election.endDate) < today
+                                ? "text-gray-400"
+                                : new Date(election.startDate) > today
+                                ? "text-green-600"
+                                : "text-red-600 "
+                            }`}
+                          >
+                            {election.name}
+                          </span>
+                           
+                          {election.result?.winner && (
+                            <MdOutlineFactCheck className="text-green-600 dark:text-green-700 text-xl mt-1 mx-4" />
                           )}
-                      </div>
-                    </Table.Cell>
+                          {new Date(election.startDate) < today &&
+                            new Date(election.endDate) > today && (
+                              <div className="size-2 mt-1 animate-pulse rounded-full bg-red-600 mx-1" />
+                            )}
+                        </div>
+                      </Table.Cell>
 
-                    <Table.Cell
-                      className={`md:text-lg font-medium ${
-                        new Date(election.endDate) < today
-                          ? "text-gray-400"
-                          : new Date(election.startDate) > today
-                          ? "text-green-600"
-                          : "text-red-600 "
-                      }`}
-                    >
-                      {new Date(election.startDate).toLocaleDateString(
-                        "en-GB",
-                        {
-                          day: "2-digit",
-                          month: "2-digit",
-                          year: "2-digit",
-                        }
-                      )}
-                      <br />
-                      {new Date(election.endDate).toLocaleDateString("en-GB", {
-                        day: "2-digit",
-                        month: "2-digit",
-                        year: "2-digit",
-                      })}
-                    </Table.Cell>
-
-                    <Table.Cell className="text-[19px] hidden 1016px:table-cell">
-                      {election.candidates.length}
-                    </Table.Cell>
-
-                    <Table.Cell>
-                      <div className="flex flex-col md:flex-row md:space-x-2 space-y-1 md:space-y-0">
-                        <button
-                          className={`${
-                            new Date() < new Date(election.endDate)
-                              ? "text-green-500 hover:scale-110 transition-all duration-150 ease-in-out"
-                              : "text-gray-300 dark:text-gray-600"
-                          }`}
-                          onClick={() => {
-                            setElectionEditModal(true);
-                            setElectionToEdit(election._id);
-                            setName(election.name);
-                            setStartDate(
-                              new Date(election.startDate)
-                                .toISOString()
-                                .split("T")[0]
-                            );
-                            setEndDate(
-                              new Date(election.endDate)
-                                .toISOString()
-                                .split("T")[0]
-                            );
-                          }}
-                          disabled={new Date() > new Date(election.endDate)}
-                        >
-                          <HiOutlinePencil className="text-2xl" />
-                        </button>
-
-                        <button
-                          className={`${
-                            new Date() < new Date(election.endDate) &&
-                            new Date() > new Date(election.startDate)
-                              ? "text-gray-300 dark:text-gray-600"
-                              : "text-red-500 hover:scale-110 transition-all duration-150 ease-in-out"
-                          }`}
-                          onClick={() => {
-                            setElectionDeleteModal(true);
-                            setElectionToDelete(election._id);
-                          }}
-                          disabled={
-                            new Date() < new Date(election.endDate) &&
-                            new Date() > new Date(election.startDate)
+                      <Table.Cell
+                        className={`md:text-lg font-medium ${
+                          new Date(election.endDate) < today
+                            ? "text-gray-400"
+                            : new Date(election.startDate) > today
+                            ? "text-green-600"
+                            : "text-red-600 "
+                        }`}
+                      >
+                        {new Date(election.startDate).toLocaleDateString(
+                          "en-GB",
+                          {
+                            day: "2-digit",
+                            month: "2-digit",
+                            year: "2-digit",
                           }
-                        >
-                          <RiDeleteBin2Line className="text-2xl" />
-                        </button>
-                      </div>
-                    </Table.Cell>
-                  </Table.Row>
-                ))
-              )}
-            </Table.Body>
-          </Table>
+                        )}
+                        <br />
+                        {new Date(election.endDate).toLocaleDateString(
+                          "en-GB",
+                          {
+                            day: "2-digit",
+                            month: "2-digit",
+                            year: "2-digit",
+                          }
+                        )}
+                      </Table.Cell>
 
-          <div className="flex overflow-x-auto sm:justify-center mb-10">
+                      <Table.Cell className="text-[19px] hidden 1016px:table-cell">
+                        {election.candidates.length}
+                      </Table.Cell>
+
+                      <Table.Cell>
+                        <div className="flex flex-col md:flex-row md:space-x-2 space-y-1 md:space-y-0">
+                          <button
+                            className={`${
+                              new Date() < new Date(election.endDate)
+                                ? "text-green-500 hover:scale-110 transition-all duration-150 ease-in-out"
+                                : "text-gray-300 dark:text-gray-600"
+                            }`}
+                            onClick={() => {
+                              setElectionEditModal(true);
+                              setElectionToEdit(election._id);
+                              setName(election.name);
+                              setStartDate(
+                                new Date(election.startDate)
+                                  .toISOString()
+                                  .split("T")[0]
+                              );
+                              setEndDate(
+                                new Date(election.endDate)
+                                  .toISOString()
+                                  .split("T")[0]
+                              );
+                            }}
+                            disabled={new Date() > new Date(election.endDate)}
+                          >
+                            <HiOutlinePencil className="text-2xl" />
+                          </button>
+
+                          <button
+                            className={`${
+                              new Date() < new Date(election.endDate) &&
+                              new Date() > new Date(election.startDate)
+                                ? "text-gray-300 dark:text-gray-600"
+                                : "text-red-500 hover:scale-110 transition-all duration-150 ease-in-out"
+                            }`}
+                            onClick={() => {
+                              setElectionDeleteModal(true);
+                              setElectionToDelete(election._id);
+                            }}
+                            disabled={
+                              new Date() < new Date(election.endDate) &&
+                              new Date() > new Date(election.startDate)
+                            }
+                          >
+                            <RiDeleteBin2Line className="text-2xl" />
+                          </button>
+                        </div>
+                      </Table.Cell>
+                    </Table.Row>
+                  ))
+                )}
+              </Table.Body>
+            </Table>
+          </div>
+          <div className="flex overflow-x-auto sm:justify-center my-10">
             <Pagination
               layout="navigation"
               currentPage={currentPage}
               totalPages={totalPages}
               onPageChange={(page) => {
-                setCurrentPage(page); 
+                setCurrentPage(page);
                 window.scrollTo(0, 0);
               }}
               showIcons
             />
+          </div>
+          <div className="m-4 flex p-3 flex-col capitalize border-[3px] border-cyan-600">
+            <h1 className="mb-2 text-red-600">Important notes :-</h1>
+            <span className="flex items-center gap-1">
+              <VscDebugBreakpointLogUnverified className="text-red-600" />
+              Live elections can only be edited.
+            </span>
+            <span className="flex items-center gap-1">
+              <VscDebugBreakpointLogUnverified className="text-red-600" />
+              ended elections can only be deleted.
+            </span>
+            <span className="flex items-center gap-1">
+              <VscDebugBreakpointLogUnverified className="text-red-600" />
+              Upcoming elections can be edited and deleted.
+            </span>
           </div>
         </div>
       </div>
