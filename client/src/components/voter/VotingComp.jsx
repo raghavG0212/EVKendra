@@ -11,7 +11,7 @@ import { toast } from "react-toastify";
 import Loader from "../Loader";
 import moment from "moment";
 
-export default function VoterDashboard() {
+export default function VotingComp() {
   const { id } = useParams();
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -67,7 +67,7 @@ export default function VoterDashboard() {
   return (
     <div className="flex flex-col md:flex-row">
       <VoterSideBar className="h-full md:w-60" />
-      <div className="flex-grow border-r-2 cursor-default mt-6 md:mt-0">
+      <div className="flex-grow border-r-2 cursor-default mt-6 md:mt-0 min-h-screen">
         <div>
           <div className="flex justify-center items-center mt-1 mb-2 p-4 bg-slate-300 dark:bg-slate-700 rounded-md">
             <div className="text-center">
@@ -80,7 +80,7 @@ export default function VoterDashboard() {
               </p>
             </div>
           </div>
-          <Table className="w-full  dark:text-white min-h-screen">
+          <Table className="w-full  dark:text-white">
             <Table.Head>
               <Table.HeadCell className="border-r">Name</Table.HeadCell>
               <Table.HeadCell className="border-r">Party Name</Table.HeadCell>

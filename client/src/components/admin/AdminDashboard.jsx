@@ -4,8 +4,6 @@ import {
   Modal,
   Table,
   Spinner,
-  Label,
-  TextInput,
 } from "flowbite-react";
 import {
   Chart as ChartJS,
@@ -21,9 +19,9 @@ import { Line } from "react-chartjs-2";
 import axios from "axios";
 import AdminSidebar from "./AdminSidebar";
 import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { RiDeleteBin2Line, RiAdminLine } from "react-icons/ri";
-import { HiOutlineExclamationCircle, HiOutlinePencil } from "react-icons/hi";
+import { HiOutlineExclamationCircle } from "react-icons/hi";
 import {
   MdOutlineEventAvailable,
   MdLiveTv,
@@ -35,7 +33,6 @@ import { GiVote } from "react-icons/gi";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import Heading from "../Heading";
-import { deleteElection, setElections } from "../../redux/electionSlice";
 import Loader from "../Loader";
 
 ChartJS.register(
@@ -48,9 +45,7 @@ ChartJS.register(
   PointElement
 );
 
-export default function AdminMainDash() {
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
+export default function AdminDashboard() {
   const elections = useSelector((state) => state.election.electionList);
   const currentUser = useSelector((state) => state.auth.currentUser);
   const [admins, setAdmins] = useState([]);
@@ -61,13 +56,6 @@ export default function AdminMainDash() {
   const [voters, setVoters] = useState(0);
   const [voterData, setVoterData] = useState([]);
   const today = new Date();
-  const [electionEditModal, setElectionEditModal] = useState(false);
-  const [electionDeleteModal, setElectionDeleteModal] = useState(false);
-  const [electionToDelete, setElectionToDelete] = useState(null);
-  const [electionToEdit, setElectionToEdit] = useState(null);
-  const [name, setName] = useState("");
-  const [startDate, setStartDate] = useState("");
-  const [endDate, setEndDate] = useState("");
 
   useEffect(() => {
     const fetchAdmins = async () => {
@@ -163,18 +151,6 @@ export default function AdminMainDash() {
     countVoters();
   }, []);
 
-  const fetchElections = async () => {
-    try {
-      const updatedElections = await axios.get(`/api/v1/election/getAll`);
-      dispatch(setElections(updatedElections.data));
-    } catch (err) {
-      console.error("Failed to fetch elections:", err);
-    }
-  };
-
-  useEffect(() => {
-    fetchElections();
-  }, [dispatch]);
 
   const handleAdminDelete = async () => {
     setLoading(true);
@@ -198,57 +174,6 @@ export default function AdminMainDash() {
     } finally {
       setLoading(false);
     }
-  };
-
-  const handleEditElection = async () => {
-    setLoading(true);
-    try {
-      const updatedElection = {
-        name: name || electionToEdit?.name,
-        startDate: startDate || electionToEdit?.startDate,
-        endDate: endDate || electionToEdit?.endDate,
-      };
-
-      const response = await axios.put(
-        `/api/v1/election/edit-election/${electionToEdit}`,
-        updatedElection
-      );
-      await fetchElections();
-      toast.success(response.data.message || "Details updated successfully");
-      setElectionEditModal(false);
-    } catch (err) {
-      toast.error(err.response?.data?.message || "Failed to edit election");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleDeleteElection = async () => {
-    setLoading(true);
-    try {
-      const response = await axios.delete(
-        `/api/v1/election/delete-election/${electionToDelete}`
-      );
-      dispatch(deleteElection(electionToDelete));
-      await fetchElections();
-      setElectionDeleteModal(false);
-      toast.success(response.data.message);
-    } catch (err) {
-      toast.error(err.response?.data?.message || "Failed to delete election.");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const NavigateToElection = (election) => {
-    navigate(`/election/${election._id}/candidates`, {
-      state: {
-        Ename: election.name,
-        startDate: election.startDate,
-        endDate: election.endDate,
-      },
-    });
-    window.scroll(0, 0);
   };
 
   if (loading) {
@@ -376,207 +301,10 @@ export default function AdminMainDash() {
             </Card>
           </div>
 
-          <div className="m-5">
-            <Table className="shadow-md">
-              <Table.Head>
-                <Table.HeadCell className="border-r">Name</Table.HeadCell>
-                <Table.HeadCell className="border-r">
-                  Active Period
-                </Table.HeadCell>
-                <Table.HeadCell className="border-r hidden 1016px:table-cell">
-                  Candidates
-                </Table.HeadCell>
-                <Table.HeadCell>Actions</Table.HeadCell>
-              </Table.Head>
-              <Table.Body className="divide-y">
-                {elections
-                  .slice()
-                  .sort((a, b) => new Date(a.startDate) - new Date(b.startDate))
-                  .map((election) => (
-                    <Table.Row
-                      key={election._id}
-                      className="hover:bg-slate-200 dark:hover:bg-slate-900"
-                    >
-                      <Table.Cell
-                        className="font-semibold hover:underline text-wrap cursor-pointer"
-                        onClick={() => NavigateToElection(election)}
-                      >
-                        <div className="flex items-center justify-between">
-                          <span className="sm:text-[16px]">
-                            {election.name}
-                          </span>
-
-                          {election.result?.winner && (
-                            <MdOutlineFactCheck className="text-green-600 xl:mr-16" />
-                          )}
-                        </div>
-                      </Table.Cell>
-                      <Table.Cell
-                        className={`md:text-lg font-medium ${
-                          new Date(election.endDate) < today
-                            ? "text-gray-400"
-                            : new Date(election.startDate) > today
-                            ? "text-green-600"
-                            : "text-red-600 animate-pulse"
-                        }`}
-                      >
-                        {new Date(election.startDate).toLocaleDateString(
-                          "en-GB",
-                          {
-                            day: "2-digit",
-                            month: "2-digit",
-                            year: "2-digit",
-                          }
-                        )}{" "}
-                        - <br></br>
-                        {new Date(election.endDate).toLocaleDateString(
-                          "en-GB",
-                          {
-                            day: "2-digit",
-                            month: "2-digit",
-                            year: "2-digit",
-                          }
-                        )}
-                      </Table.Cell>
-                      <Table.Cell className="text-[19px] hidden 1016px:table-cell">
-                        {election.candidates.length}
-                      </Table.Cell>
-                      <Table.Cell>
-                        <div className="flex flex-col md:flex-row md:space-x-2 space-y-1 md:space-y-0">
-                          <button
-                            className={`${
-                              new Date() < new Date(election.endDate)
-                                ? "text-green-500 hover:scale-110 transition-all duration-150 ease-in-out"
-                                : "text-gray-300 dark:text-gray-600"
-                            } `}
-                            onClick={() => {
-                              setElectionEditModal(true);
-                              setElectionToEdit(election._id);
-                              setName(election.name);
-                              setStartDate(
-                                new Date(election.startDate)
-                                  .toISOString()
-                                  .split("T")[0]
-                              );
-                              setEndDate(
-                                new Date(election.endDate)
-                                  .toISOString()
-                                  .split("T")[0]
-                              );
-                            }}
-                            disabled={new Date() > new Date(election.endDate)}
-                          >
-                            <HiOutlinePencil className="text-2xl" />
-                          </button>
-                          <button
-                            className={`${
-                              new Date() < new Date(election.endDate) &&
-                              new Date() > new Date(election.startDate)
-                                ? "text-gray-300 dark:text-gray-600"
-                                : "text-red-500 hover:scale-110 transition-all duration-150 ease-in-out}"
-                            }`}
-                            onClick={() => {
-                              setElectionDeleteModal(true);
-                              setElectionToDelete(election._id);
-                            }}
-                            disabled={
-                              new Date() < new Date(election.endDate) &&
-                              new Date() > new Date(election.startDate)
-                            }
-                          >
-                            <RiDeleteBin2Line className="text-2xl" />
-                          </button>
-                        </div>
-                      </Table.Cell>
-                    </Table.Row>
-                  ))}
-              </Table.Body>
-            </Table>
-          </div>
+         
         </div>
       </div>
 
-      {/*Election Edit Modal */}
-      <Modal
-        show={electionEditModal}
-        onClose={() => setElectionEditModal(false)}
-      >
-        <Modal.Header>Edit Election</Modal.Header>
-        <Modal.Body>
-          <div className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="name" value="Election Name" />
-              <TextInput
-                id="name"
-                placeholder="Enter election name"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="startDate" value="Start Date" />
-              <TextInput
-                id="startDate"
-                type="date"
-                value={startDate}
-                onChange={(e) => setStartDate(e.target.value)}
-                disabled={new Date() > new Date(startDate)}
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="endDate" value="End Date" />
-              <TextInput
-                id="endDate"
-                type="date"
-                value={endDate}
-                onChange={(e) => setEndDate(e.target.value)}
-              />
-            </div>
-          </div>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button onClick={handleEditElection} color="success">
-            Edit Details
-          </Button>
-        </Modal.Footer>
-      </Modal>
-
-      {/* election-delete-Modal */}
-      <Modal
-        size="md"
-        show={electionDeleteModal}
-        onClose={() => setElectionDeleteModal(false)}
-        popup
-      >
-        <Modal.Header />
-        <Modal.Body>
-          <div className="text-center">
-            <HiOutlineExclamationCircle className="mx-auto mb-4 h-14 w-14 text-gray-400 dark:text-gray-200" />
-            <h3 className="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">
-              Are You Sure , You Want to Delete this Election?
-            </h3>
-            <div className="flex justify-center gap-8">
-              <Button color="success" outline onClick={handleDeleteElection}>
-                {loading ? (
-                  <>
-                    <Spinner size="sm" />
-                    <span className="pl-3">Loading...</span>
-                  </>
-                ) : (
-                  "Yes I'm Sure"
-                )}
-              </Button>
-              <Button
-                color="failure"
-                outline
-                onClick={() => setElectionDeleteModal(false)}
-              >
-                No, cancel
-              </Button>
-            </div>
-          </div>
-        </Modal.Body>
-      </Modal>
 
       {/* admin-modal */}
       <Modal

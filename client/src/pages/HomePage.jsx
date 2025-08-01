@@ -18,6 +18,7 @@ export default function HomePage() {
       faqsRef.current.scrollIntoView({ behavior: "smooth" });
     }
   }, [location]);
+  
   return (
     <div className="flex-col mt-20 max-w-[1350px] mx-auto">
       <div className="flex flex-col xl:flex-row justify-between">
@@ -45,7 +46,7 @@ export default function HomePage() {
                 {currentUser.name}
               </span>
             </div>
-            <Link to={isAdmin ? "/admin-dashboard" : "/voter-profile"}>
+            <Link to={isAdmin ? "/admin-dashboard" : "/voter-election-dashboard"}>
               <Button
                 gradientDuoTone="purpleToBlue"
                 outline

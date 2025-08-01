@@ -4,45 +4,16 @@ import { useLocation, Link, useNavigate } from "react-router-dom";
 import { logout } from "../../redux/authSlice";
 import { useDispatch } from "react-redux";
 import { useEffect, useState } from "react";
-import axios from "axios";
 import { toast } from "react-toastify";
 import { clearVoteStatus } from "../../redux/voterSlice";
 import { GiVote } from "react-icons/gi";
-import { CiCircleList } from "react-icons/ci";
 import { IoExitOutline, IoListSharp } from "react-icons/io5";
 
 export default function VoterSideBar() {
   const location = useLocation();
-  const [elections, setElections] = useState([]);
-  const [loading, setLoading] = useState(false);
   const [isOpen, setIsOpen] = useState(true);
-  const [isCollapsed, setIsCollapsed] = useState(true);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const today = new Date();
-
-  useEffect(() => {
-    const fetchElections = async () => {
-      setLoading(true);
-      try {
-        const response = await axios.get("/api/v1/election/getAll");
-        const filteredElections = response.data.filter(
-          ({ startDate, endDate }) => {
-            const start = new Date(startDate);
-            const end = new Date(endDate);
-            return (start <= today && end >= today) || today > end;
-          }
-        );
-        setElections(filteredElections);
-      } catch {
-        toast.error("Failed to load elections");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchElections();
-  }, []);
 
   useEffect(() => {
     const handleResize = () => {
@@ -56,20 +27,6 @@ export default function VoterSideBar() {
       window.removeEventListener("resize", handleResize);
     };
   }, []);
-
-  const handleNavigation = (election) => {
-    navigate(`/election/${election._id}/vote`, {
-      state: {
-        Ename: election.name,
-        startDate: election.startDate,
-        endDate: election.endDate,
-      },
-    });
-    if (window.innerWidth > 768) {
-      window.scrollTo(0, 0);
-    }
-    setIsCollapsed(true);
-  };
 
   const handleLogout = () => {
     dispatch(logout());
@@ -105,48 +62,14 @@ export default function VoterSideBar() {
             Menu
           </h1>
           <Sidebar.ItemGroup className={`${isOpen ? "block" : "hidden"}`}>
-            <Sidebar.Collapse
-              label="Elections"
+            <Sidebar.Item
+              as={Link}
+              to="/voter-election-dashboard"
               icon={GiVote}
-              open={!isCollapsed}
-              onClick={() => {
-                setIsCollapsed((prev) => !prev);
-              }}
+              active={location.pathname === "/voter-election-dashboard"}
             >
-              {elections.map((election, index) => (
-                <Sidebar.Item
-                  key={election._id}
-                  as="button"
-                  onClick={() => handleNavigation(election)}
-                  active={
-                    location.pathname === `/election/${election._id}/vote`
-                  }
-                  icon={CiCircleList}
-                  className={`hover:text-blue-500 dark:hover:text-blue-500 `}
-                >
-                  <div className="flex flex-col text-start text-wrap">
-                    {election.name}
-                    <div
-                      className={`flex items-center font-bold ${
-                        new Date(election.endDate) < today
-                          ? "text-gray-400"
-                          : "text-red-600"
-                      }`}
-                    >
-                      <span className="mr-3 font-semibold">
-                        {new Date(election.endDate) < today ? "Ended" : "Live"}
-                      </span>
-                      {new Date(election.endDate) >= today && (
-                        <span className=" w-2 h-2 bg-red-600 rounded-full animate-pulse mt-[5px]"></span>
-                      )}
-                    </div>
-                  </div>
-                  {index + 1 < elections.length && (
-                    <div className="h-[3px] w-full bg-gradient-to-r from-slate-200 via-slate-300 to-slate-500 dark:from-slate-400 dark:via-slate-500 dark:to-slate-700 mt-2" />
-                  )}
-                </Sidebar.Item>
-              ))}
-            </Sidebar.Collapse>
+              Elections
+            </Sidebar.Item>
             <div className="h-[3px] w-full bg-gradient-to-r from-slate-200 via-slate-300 to-slate-500 dark:from-slate-400 dark:via-slate-500 dark:to-slate-700 mt-2" />
             <Sidebar.Item
               as={Link}

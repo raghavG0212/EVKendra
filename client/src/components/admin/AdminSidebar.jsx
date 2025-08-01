@@ -121,7 +121,7 @@ export default function AdminSidebar() {
       
             <Sidebar.Item
             as={Link}
-            to="/election"
+            to="/admin-election-dashboard"
             icon={GiVote}
             active={location.pathname === "/election"}
             >
