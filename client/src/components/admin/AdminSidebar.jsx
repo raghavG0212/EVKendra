@@ -20,6 +20,7 @@ export default function AdminSidebar() {
   const elections = useSelector((state) => state.election.electionList);
   const [loading, setLoading] = useState(false);
   const [createElectionModal, setCreateElectionModal] = useState(false);
+  const [openDeleteModal, setOpenDeleteModal] = useState(false);
   const [isOpen, setIsOpen] = useState(true);
   const [isCollapsed, setIsCollapsed] = useState(true);
   const [name, setName] = useState("");
@@ -136,72 +137,16 @@ export default function AdminSidebar() {
               Dashboard
             </Sidebar.Item>
             <div className="h-[3px] w-full bg-gradient-to-r from-slate-200 via-slate-300 to-slate-500 dark:from-slate-400 dark:via-slate-500 dark:to-slate-700" />
+      
             <Sidebar.Item
-              icon={IoCreateSharp}
-              className="cursor-pointer font-bold"
+            as={Link}
+            to="/election"
+            icon={GiVote}
+            active={location.pathname === "/election"}
             >
-              <Button
-                gradientDuoTone="purpleToBlue"
-                onClick={() => setCreateElectionModal(true)}
-                outline
-                className="w-full"
-              >
-                Add New Election
-              </Button>
+            Elections
             </Sidebar.Item>
-            <div className="h-[3px] w-full bg-gradient-to-r from-slate-200 via-slate-300 to-slate-500 dark:from-slate-400 dark:via-slate-500 dark:to-slate-700" />
-            {elections.length > 0 && (
-              <Sidebar.Collapse
-                icon={GiVote}
-                label="Elections"
-                open={!isCollapsed}
-                onClick={() => {
-                  setIsCollapsed((prev) => !prev);
-                }}
-              >
-                {elections
-                  .slice()
-                  .sort((a, b) => new Date(a.startDate) - new Date(b.startDate))
-                  .map((election, index) => (
-                    <Sidebar.Item
-                      key={election._id}
-                      as="button"
-                      onClick={() =>
-                        handleNavigation(
-                          `/election/${election._id}/candidates`,
-                          election
-                        )
-                      }
-                      icon={CiCircleList}
-                      active={
-                        location.pathname ===
-                        `/election/${election._id}/candidates`
-                      }
-                    >
-                      <div className="flex flex-col text-start text-wrap">
-                        {election.name}
-                        {new Date(election.startDate) > today ? (
-                          <div className="relative flex items-center font-bold text-green-500">
-                            <span className="mr-3 font-semibold">Upcoming</span>
-                          </div>
-                        ) : new Date(election.endDate) < today ? (
-                          <div className="relative flex items-center font-bold text-gray-400">
-                            <span className="mr-3 font-semibold">Ended</span>
-                          </div>
-                        ) : (
-                          <div className="flex items-center font-bold text-red-600">
-                            <span className="mr-3 font-semibold">Live</span>
-                            <span className=" w-2 h-2 bg-red-600 rounded-full animate-pulse mt-[3.5px]"></span>
-                          </div>
-                        )}
-                      </div>
-                      {index + 1 < elections.length && (
-                        <div className="h-[3px] w-full bg-gradient-to-r from-slate-200 via-slate-300 to-slate-500 dark:from-slate-400 dark:via-slate-500 dark:to-slate-700 mt-2" />
-                      )}
-                    </Sidebar.Item>
-                  ))}
-              </Sidebar.Collapse>
-            )}
+            
             <div className="h-[3px] w-full bg-gradient-to-r from-slate-200 via-slate-300 to-slate-500 dark:from-slate-400 dark:via-slate-500 dark:to-slate-700" />
             <Sidebar.Item
               as={Link}

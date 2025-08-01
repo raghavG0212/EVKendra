@@ -211,8 +211,8 @@ export default function AdminDashBoard() {
   return (
     <div className="flex flex-col md:flex-row">
       <AdminSidebar className="h-full md:w-60" />
-      <div className="flex flex-col flex-grow cursor-default">
-        <div>
+      <div className="flex-grow cursor-default">
+        <div className="flex flex-col">
           <div className="flex justify-between items-center mt-1 mb-2 p-4 bg-slate-300 dark:bg-slate-700 rounded-md">
             {Ename !== undefined && startDate !== undefined && endDate !== undefined ? (
               <div className="text-center">

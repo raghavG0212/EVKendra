@@ -18,6 +18,7 @@ import Candidates from "./components/admin/Candidates";
 import Elections from "./components/voter/Elections";
 import { Bounce, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import AdminElections from "./components/admin/AdminElections";
 
 export default function App() {
   return (
@@ -40,6 +41,10 @@ export default function App() {
           <Route
             path="/election/:id/candidates"
             element={<Candidates />}
+          />
+          <Route
+            path="/election"
+            element={<AdminElections />}
           />
         </Route>
         <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />

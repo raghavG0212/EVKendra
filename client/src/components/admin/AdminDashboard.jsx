@@ -257,235 +257,242 @@ export default function AdminMainDash() {
   return (
     <div className="flex flex-col md:flex-row min-h-screen cursor-default ">
       <AdminSidebar className="h-full md:w-60" />
-      <div className="flex flex-col flex-grow h-full md:mx-8 mb-10">
-        <div className="grid grid-cols-1 450px:grid-cols-2 1016px:grid-cols-3 gap-3 m-4 p-2 italic lowercase font-serif">
-          <Card className="text-center text-2xl lg:text-3xl bg-slate-100 mb-3 sm:mb-0">
-            <h1>Voters</h1>
-            <div className="flex justify-center text-5xl">
-              <MdHowToVote />
-            </div>
-            <p className="text-blue-600">{voters}</p>
-          </Card>
-          <Card className="text-center text-2xl lg:text-3xl bg-slate-100 mb-3 sm:mb-0">
-            <h1>Admins</h1>
-            <div className="flex justify-center text-5xl">
-              <RiAdminLine />
-            </div>
-            <p className="text-blue-600">{admins.length}</p>
-          </Card>
-          <Card className="text-center text-2xl lg:text-3xl bg-slate-100 mb-3 sm:mb-0">
-            <h1>Elections</h1>
-            <div className="flex justify-center text-5xl">
-              <GiVote />
-            </div>
-            <p className="text-blue-600">{elections.length}</p>
-          </Card>
-        </div>
+      <div className="flex-grow ">
+        <div className="flex flex-col h-full md:mx-8 mb-10">
+          <div className="grid grid-cols-1 450px:grid-cols-2 1016px:grid-cols-3 gap-3 m-4 p-2 italic lowercase font-serif">
+            <Card className="text-center text-2xl lg:text-3xl bg-slate-100 mb-3 sm:mb-0">
+              <h1>Voters</h1>
+              <div className="flex justify-center text-5xl">
+                <MdHowToVote />
+              </div>
+              <p className="text-blue-600">{voters}</p>
+            </Card>
+            <Card className="text-center text-2xl lg:text-3xl bg-slate-100 mb-3 sm:mb-0">
+              <h1>Admins</h1>
+              <div className="flex justify-center text-5xl">
+                <RiAdminLine />
+              </div>
+              <p className="text-blue-600">{admins.length}</p>
+            </Card>
+            <Card className="text-center text-2xl lg:text-3xl bg-slate-100 mb-3 sm:mb-0">
+              <h1>Elections</h1>
+              <div className="flex justify-center text-5xl">
+                <GiVote />
+              </div>
+              <p className="text-blue-600">{elections.length}</p>
+            </Card>
+          </div>
 
-        <div className="flex flex-col xl:flex-row gap-4">
-          <div className="flex flex-col xl:flex-grow">
-            <Heading heading="voter enrollment" />
-            <div className="mt-5 flex justify-center">
-              <Line data={chartData} options={chartOptions} />
+          <div className="flex flex-col xl:flex-row gap-4">
+            <div className="flex flex-col xl:flex-grow">
+              <Heading heading="voter enrollment" />
+              <div className="mt-5 flex justify-center">
+                <Line data={chartData} options={chartOptions} />
+              </div>
+            </div>
+
+            <div className="flex flex-col xl:w-1/2 xl:mx-auto">
+              <Heading heading="executive board" />
+              <div className="m-5">
+                <Table className="shadow-md mt-4">
+                  <Table.Head>
+                    <Table.HeadCell className="border-r">Name</Table.HeadCell>
+                    <Table.HeadCell>Actions</Table.HeadCell>
+                  </Table.Head>
+                  <Table.Body className="divide-y">
+                    {admins.map((admin) => (
+                      <Table.Row key={admin._id}>
+                        <Table.Cell className="border-r font-semibold flex justify-between items-center">
+                          <span
+                            className={`${
+                              currentUser._id === admin._id && "text-blue-600"
+                            } text-[20px] `}
+                          >
+                            {" "}
+                            {admin.name}
+                          </span>
+                          {admin._id === creator._id && (
+                            <span className="text-[10px] sm:text-[16px] capitalize bg-cyan-600 text-white px-3 sm:py-1 rounded-md font-mono mt-1.5 sm:mt-0">
+                              creator
+                            </span>
+                          )}
+                        </Table.Cell>
+                        <Table.Cell>
+                          {currentUser._id === admin._id ||
+                          admin._id === creator._id ? (
+                            <button>
+                              <RiDeleteBin2Line className="text-2xl text-gray-300 dark:text-gray-600" />
+                            </button>
+                          ) : (
+                            <button
+                              className="text-red-500 hover:scale-110 transition-all duration-150 ease-in-out"
+                              onClick={() => {
+                                setAdminToDelete(admin._id);
+                                setOpenDeleteModal(true);
+                              }}
+                            >
+                              <RiDeleteBin2Line className="text-2xl hover:text-red-700" />
+                            </button>
+                          )}
+                        </Table.Cell>
+                      </Table.Row>
+                    ))}
+                  </Table.Body>
+                </Table>
+              </div>
             </div>
           </div>
 
-          <div className="flex flex-col xl:w-1/2 xl:mx-auto">
-            <Heading heading="executive board" />
-            <div className="m-5">
-              <Table className="shadow-md mt-4">
-                <Table.Head>
-                  <Table.HeadCell className="border-r">Name</Table.HeadCell>
-                  <Table.HeadCell>Actions</Table.HeadCell>
-                </Table.Head>
-                <Table.Body className="divide-y">
-                  {admins.map((admin) => (
-                    <Table.Row key={admin._id}>
-                      <Table.Cell className="border-r font-semibold flex justify-between items-center">
-                        <span
-                          className={`${
-                            currentUser._id === admin._id && "text-blue-600"
-                          } text-[20px] `}
-                        >
-                          {" "}
-                          {admin.name}
-                        </span>
-                        {admin._id === creator._id && (
-                          <span className="text-[10px] sm:text-[16px] capitalize bg-cyan-600 text-white px-3 sm:py-1 rounded-md font-mono mt-1.5 sm:mt-0">
-                            creator
+          <Heading heading="Election Overview" />
+
+          <div className="grid grid-cols-1 450px:grid-cols-2 1016px:grid-cols-3 xl:grid-cols-4 gap-3 m-4 p-3 italic font-serif">
+            <Card className="text-center text-2xl lg:text-3xl bg-slate-100 mb-3 sm:mb-0">
+              <h1>upcoming</h1>
+              <div className="flex justify-center text-5xl">
+                <MdOutlineEventAvailable />
+              </div>
+              <p className="text-blue-600">{upcomingElections.length}</p>
+            </Card>
+            <Card className="text-center text-2xl lg:text-3xl bg-slate-100 mb-3 sm:mb-0">
+              <h1>live</h1>
+              <div className="flex justify-center text-5xl">
+                <MdLiveTv />
+              </div>
+              <p className="text-blue-600">{liveElections.length}</p>
+            </Card>
+            <Card className="text-center text-2xl lg:text-3xl bg-slate-100 mb-3 sm:mb-0">
+              <h1>ended</h1>
+              <div className="flex justify-center text-5xl">
+                <MdEventBusy />
+              </div>
+              <p className="text-blue-600">{endedElections.length}</p>
+            </Card>
+            <Card className="text-center text-2xl lg:text-3xl bg-slate-100 mb-3 sm:mb-0">
+              <h1>declared</h1>
+              <div className="flex justify-center text-5xl">
+                <MdOutlineFactCheck />
+              </div>
+              <p className="text-blue-600">{declaredElections.length}</p>
+            </Card>
+          </div>
+
+          <div className="m-5">
+            <Table className="shadow-md">
+              <Table.Head>
+                <Table.HeadCell className="border-r">Name</Table.HeadCell>
+                <Table.HeadCell className="border-r">
+                  Active Period
+                </Table.HeadCell>
+                <Table.HeadCell className="border-r hidden 1016px:table-cell">
+                  Candidates
+                </Table.HeadCell>
+                <Table.HeadCell>Actions</Table.HeadCell>
+              </Table.Head>
+              <Table.Body className="divide-y">
+                {elections
+                  .slice()
+                  .sort((a, b) => new Date(a.startDate) - new Date(b.startDate))
+                  .map((election) => (
+                    <Table.Row
+                      key={election._id}
+                      className="hover:bg-slate-200 dark:hover:bg-slate-900"
+                    >
+                      <Table.Cell
+                        className="font-semibold hover:underline text-wrap cursor-pointer"
+                        onClick={() => NavigateToElection(election)}
+                      >
+                        <div className="flex items-center justify-between">
+                          <span className="sm:text-[16px]">
+                            {election.name}
                           </span>
+
+                          {election.result?.winner && (
+                            <MdOutlineFactCheck className="text-green-600 xl:mr-16" />
+                          )}
+                        </div>
+                      </Table.Cell>
+                      <Table.Cell
+                        className={`md:text-lg font-medium ${
+                          new Date(election.endDate) < today
+                            ? "text-gray-400"
+                            : new Date(election.startDate) > today
+                            ? "text-green-600"
+                            : "text-red-600 animate-pulse"
+                        }`}
+                      >
+                        {new Date(election.startDate).toLocaleDateString(
+                          "en-GB",
+                          {
+                            day: "2-digit",
+                            month: "2-digit",
+                            year: "2-digit",
+                          }
+                        )}{" "}
+                        - <br></br>
+                        {new Date(election.endDate).toLocaleDateString(
+                          "en-GB",
+                          {
+                            day: "2-digit",
+                            month: "2-digit",
+                            year: "2-digit",
+                          }
                         )}
                       </Table.Cell>
+                      <Table.Cell className="text-[19px] hidden 1016px:table-cell">
+                        {election.candidates.length}
+                      </Table.Cell>
                       <Table.Cell>
-                        {currentUser._id === admin._id ||
-                        admin._id === creator._id ? (
-                          <button>
-                            <RiDeleteBin2Line className="text-2xl text-gray-300 dark:text-gray-600" />
-                          </button>
-                        ) : (
+                        <div className="flex flex-col md:flex-row md:space-x-2 space-y-1 md:space-y-0">
                           <button
-                            className="text-red-500 hover:scale-110 transition-all duration-150 ease-in-out"
+                            className={`${
+                              new Date() < new Date(election.endDate)
+                                ? "text-green-500 hover:scale-110 transition-all duration-150 ease-in-out"
+                                : "text-gray-300 dark:text-gray-600"
+                            } `}
                             onClick={() => {
-                              setAdminToDelete(admin._id);
-                              setOpenDeleteModal(true);
+                              setElectionEditModal(true);
+                              setElectionToEdit(election._id);
+                              setName(election.name);
+                              setStartDate(
+                                new Date(election.startDate)
+                                  .toISOString()
+                                  .split("T")[0]
+                              );
+                              setEndDate(
+                                new Date(election.endDate)
+                                  .toISOString()
+                                  .split("T")[0]
+                              );
                             }}
+                            disabled={new Date() > new Date(election.endDate)}
                           >
-                            <RiDeleteBin2Line className="text-2xl hover:text-red-700" />
+                            <HiOutlinePencil className="text-2xl" />
                           </button>
-                        )}
+                          <button
+                            className={`${
+                              new Date() < new Date(election.endDate) &&
+                              new Date() > new Date(election.startDate)
+                                ? "text-gray-300 dark:text-gray-600"
+                                : "text-red-500 hover:scale-110 transition-all duration-150 ease-in-out}"
+                            }`}
+                            onClick={() => {
+                              setElectionDeleteModal(true);
+                              setElectionToDelete(election._id);
+                            }}
+                            disabled={
+                              new Date() < new Date(election.endDate) &&
+                              new Date() > new Date(election.startDate)
+                            }
+                          >
+                            <RiDeleteBin2Line className="text-2xl" />
+                          </button>
+                        </div>
                       </Table.Cell>
                     </Table.Row>
                   ))}
-                </Table.Body>
-              </Table>
-            </div>
+              </Table.Body>
+            </Table>
           </div>
-        </div>
-
-        <Heading heading="Election Overview" />
-
-        <div className="grid grid-cols-1 450px:grid-cols-2 1016px:grid-cols-3 xl:grid-cols-4 gap-3 m-4 p-3 italic font-serif">
-          <Card className="text-center text-2xl lg:text-3xl bg-slate-100 mb-3 sm:mb-0">
-            <h1>upcoming</h1>
-            <div className="flex justify-center text-5xl">
-              <MdOutlineEventAvailable />
-            </div>
-            <p className="text-blue-600">{upcomingElections.length}</p>
-          </Card>
-          <Card className="text-center text-2xl lg:text-3xl bg-slate-100 mb-3 sm:mb-0">
-            <h1>live</h1>
-            <div className="flex justify-center text-5xl">
-              <MdLiveTv />
-            </div>
-            <p className="text-blue-600">{liveElections.length}</p>
-          </Card>
-          <Card className="text-center text-2xl lg:text-3xl bg-slate-100 mb-3 sm:mb-0">
-            <h1>ended</h1>
-            <div className="flex justify-center text-5xl">
-              <MdEventBusy />
-            </div>
-            <p className="text-blue-600">{endedElections.length}</p>
-          </Card>
-          <Card className="text-center text-2xl lg:text-3xl bg-slate-100 mb-3 sm:mb-0">
-            <h1>declared</h1>
-            <div className="flex justify-center text-5xl">
-              <MdOutlineFactCheck />
-            </div>
-            <p className="text-blue-600">{declaredElections.length}</p>
-          </Card>
-        </div>
-
-        <div className="m-5">
-          <Table className="shadow-md">
-            <Table.Head>
-              <Table.HeadCell className="border-r">Name</Table.HeadCell>
-              <Table.HeadCell className="border-r">
-                Active Period
-              </Table.HeadCell>
-              <Table.HeadCell className="border-r hidden 1016px:table-cell">
-                Candidates
-              </Table.HeadCell>
-              <Table.HeadCell>Actions</Table.HeadCell>
-            </Table.Head>
-            <Table.Body className="divide-y">
-              {elections
-                .slice()
-                .sort((a, b) => new Date(a.startDate) - new Date(b.startDate))
-                .map((election) => (
-                  <Table.Row
-                    key={election._id}
-                    className="hover:bg-slate-200 dark:hover:bg-slate-900"
-                  >
-                    <Table.Cell
-                      className="font-semibold hover:underline text-wrap cursor-pointer"
-                      onClick={() => NavigateToElection(election)}
-                    >
-                      <div className="flex items-center justify-between">
-                        <span className="sm:text-[16px]">{election.name}</span>
-
-                        {election.result?.winner && (
-                          <MdOutlineFactCheck className="text-green-600 xl:mr-16" />
-                        )}
-                      </div>
-                    </Table.Cell>
-                    <Table.Cell
-                      className={`md:text-lg font-medium ${
-                        new Date(election.endDate) < today
-                          ? "text-gray-400"
-                          : new Date(election.startDate) > today
-                          ? "text-green-600"
-                          : "text-red-600 animate-pulse"
-                      }`}
-                    >
-                      {new Date(election.startDate).toLocaleDateString(
-                        "en-GB",
-                        {
-                          day: "2-digit",
-                          month: "2-digit",
-                          year: "2-digit",
-                        }
-                      )}{" "}
-                      - <br></br>
-                      {new Date(election.endDate).toLocaleDateString("en-GB", {
-                        day: "2-digit",
-                        month: "2-digit",
-                        year: "2-digit",
-                      })}
-                    </Table.Cell>
-                    <Table.Cell className="text-[19px] hidden 1016px:table-cell">
-                      {election.candidates.length}
-                    </Table.Cell>
-                    <Table.Cell>
-                      <div className="flex flex-col md:flex-row md:space-x-2 space-y-1 md:space-y-0">
-                        <button
-                          className={`${
-                            new Date() < new Date(election.endDate)
-                              ? "text-green-500 hover:scale-110 transition-all duration-150 ease-in-out"
-                              : "text-gray-300 dark:text-gray-600"
-                          } `}
-                          onClick={() => {
-                            setElectionEditModal(true);
-                            setElectionToEdit(election._id);
-                            setName(election.name);
-                            setStartDate(
-                              new Date(election.startDate)
-                                .toISOString()
-                                .split("T")[0]
-                            );
-                            setEndDate(
-                              new Date(election.endDate)
-                                .toISOString()
-                                .split("T")[0]
-                            );
-                          }}
-                          disabled={new Date() > new Date(election.endDate)}
-                        >
-                          <HiOutlinePencil className="text-2xl" />
-                        </button>
-                        <button
-                          className={`${
-                            new Date() < new Date(election.endDate) &&
-                            new Date() > new Date(election.startDate)
-                              ? "text-gray-300 dark:text-gray-600"
-                              : "text-red-500 hover:scale-110 transition-all duration-150 ease-in-out}"
-                          }`}
-                          onClick={() => {
-                            setElectionDeleteModal(true);
-                            setElectionToDelete(election._id);
-                          }}
-                          disabled={
-                            new Date() < new Date(election.endDate) &&
-                            new Date() > new Date(election.startDate)
-                          }
-                        >
-                          <RiDeleteBin2Line className="text-2xl" />
-                        </button>
-                      </div>
-                    </Table.Cell>
-                  </Table.Row>
-                ))}
-            </Table.Body>
-          </Table>
         </div>
       </div>
 
