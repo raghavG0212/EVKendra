@@ -10,19 +10,12 @@ import {
   Modal,
   Table,
   TextInput,
-  Card,
   Spinner,
+  Pagination,
 } from "flowbite-react";
-import {
-  MdOutlineFactCheck,
-  MdOutlineEventAvailable,
-  MdLiveTv,
-  MdEventBusy,
-  MdHowToVote,
-} from "react-icons/md";
-import { RiDeleteBin2Line, RiAdminLine } from "react-icons/ri";
+import { MdOutlineFactCheck } from "react-icons/md";
+import { RiDeleteBin2Line } from "react-icons/ri";
 import { HiOutlineExclamationCircle, HiOutlinePencil } from "react-icons/hi";
-import { GiVote } from "react-icons/gi";
 import { toast } from "react-toastify";
 import Loader from "../Loader";
 
@@ -42,6 +35,8 @@ export default function AdminElections() {
   const [electionDeleteModal, setElectionDeleteModal] = useState(false);
   const [electionToDelete, setElectionToDelete] = useState(null);
   const [electionToEdit, setElectionToEdit] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const onPageChange = (page) => setCurrentPage(page);
 
   const fetchElections = async () => {
     try {
@@ -54,7 +49,8 @@ export default function AdminElections() {
 
   useEffect(() => {
     fetchElections();
-  }, [dispatch]);
+    setCurrentPage(1);
+  }, [dispatch, filterType]);
 
   const handleAddElection = async () => {
     setLoading(true);
@@ -143,6 +139,14 @@ export default function AdminElections() {
     })
     .sort((a, b) => new Date(a.startDate) - new Date(b.startDate));
 
+  const electionsPerPage = 8;
+  const totalPages = Math.ceil(filteredElections.length / electionsPerPage);
+  const startIndex = (currentPage - 1) * electionsPerPage;
+  const paginatedElections = filteredElections.slice(
+    startIndex,
+    startIndex + electionsPerPage
+  );
+
   if (loading) {
     return <Loader />;
   }
@@ -153,27 +157,26 @@ export default function AdminElections() {
       <div className="flex-grow cursor-default">
         <div className="flex flex-col">
           <div className="flex justify-between pt-3 px-3">
-            <div className="">
-              <button
-                onClick={() => {
-                  setElectionBar((prev) => !prev);
-                }}
-              >
-                <div className="flex flex-row hover:opacity-80 active:opacity-70">
-                  <h1 className="p-2 font-semibold text-xl sm:text-2xl uppercase font-serif">
-                    Elections
-                  </h1>
-                  <div
-                    className={`flex transition-all duration-200 ease-in-out ${
-                      electionBar && "rotate-90 ml-1.5"
-                    }`}
-                  >
-                    <div className="h-7 w-1 bg-red-600 mr-1 mt-2"></div>
-                    <div className="h-7 w-1 bg-blue-700 mt-2"></div>
-                  </div>
+            <button
+              onClick={() => {
+                setElectionBar((prev) => !prev);
+              }}
+            >
+              <div className="flex flex-row hover:opacity-80 active:opacity-70">
+                <h1 className="p-2 font-semibold text-xl sm:text-2xl uppercase font-serif">
+                  Elections
+                </h1>
+                <div
+                  className={`flex transition-all duration-200 ease-in-out ${
+                    electionBar && "rotate-90 ml-1.5"
+                  }`}
+                >
+                  <div className="h-7 w-1 bg-red-600 mr-1 mt-2"></div>
+                  <div className="h-7 w-1 bg-blue-700 mt-2"></div>
                 </div>
-              </button>
-            </div>
+              </div>
+            </button>
+
             <div className="px-4 mb-1">
               {" "}
               <Button
@@ -200,7 +203,7 @@ export default function AdminElections() {
                 key={type}
                 className={`cursor-pointer font-semibold text-lg sm:text-xl transition-all duration-200 ease-in-out flex-grow py-2 text-center hover:text-violet-950  dark:hover:text-white  text-violet-700 dark:text-violet-100 uppercase  ${
                   filterType === type
-                    ? "border-b-4 border-b-violet-950 dark:border-b-white"
+                    ? "border-b-4 border-b-violet-950 dark:border-b-white bg-violet-100 dark:bg-violet-700"
                     : ""
                 }`}
                 onClick={() => setFilterType(type)}
@@ -209,7 +212,7 @@ export default function AdminElections() {
               </div>
             ))}
           </div>
-          <Table className="shadow-md mt-6">
+          <Table className="shadow-md mt-6 mb-16">
             <Table.Head>
               <Table.HeadCell className="border-r">Name</Table.HeadCell>
               <Table.HeadCell className="border-r">
@@ -231,20 +234,35 @@ export default function AdminElections() {
                   </td>
                 </tr>
               ) : (
-                filteredElections.map((election) => (
+                paginatedElections.map((election) => (
                   <Table.Row
                     key={election._id}
                     className="hover:bg-slate-200 dark:hover:bg-slate-900"
                   >
                     <Table.Cell
-                      className="font-semibold hover:underline text-wrap cursor-pointer"
+                      className="font-semibold  text-wrap cursor-pointer"
                       onClick={() => NavigateToElection(election)}
                     >
-                      <div className="flex items-center justify-between">
-                        <span className="sm:text-[16px]">{election.name}</span> 
+                      <div className="flex items-center">
+                        <span
+                          className={`sm:text-[16px] ${
+                            new Date(election.endDate) < today
+                              ? "text-gray-400"
+                              : new Date(election.startDate) > today
+                              ? "text-green-600"
+                              : "text-red-600 "
+                          }`}
+                        >
+                          {election.name}
+                        </span>
+                         
                         {election.result?.winner && (
-                          <MdOutlineFactCheck className="text-green-600 xl:mr-16" />
+                          <MdOutlineFactCheck className="text-green-600 dark:text-green-700 text-xl mt-1 mx-4" />
                         )}
+                        {new Date(election.startDate) < today &&
+                          new Date(election.endDate) > today && (
+                            <div className="size-2 mt-1 animate-pulse rounded-full bg-red-600 mx-1" />
+                          )}
                       </div>
                     </Table.Cell>
 
@@ -254,7 +272,7 @@ export default function AdminElections() {
                           ? "text-gray-400"
                           : new Date(election.startDate) > today
                           ? "text-green-600"
-                          : "text-red-600 animate-pulse"
+                          : "text-red-600 "
                       }`}
                     >
                       {new Date(election.startDate).toLocaleDateString(
@@ -330,6 +348,19 @@ export default function AdminElections() {
               )}
             </Table.Body>
           </Table>
+
+          <div className="flex overflow-x-auto sm:justify-center mb-10">
+            <Pagination
+              layout="navigation"
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={(page) => {
+                setCurrentPage(page); 
+                window.scrollTo(0, 0);
+              }}
+              showIcons
+            />
+          </div>
         </div>
       </div>
       {/* create-election */}

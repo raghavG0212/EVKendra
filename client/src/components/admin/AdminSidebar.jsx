@@ -1,14 +1,13 @@
-import { Button, Sidebar, Modal, Label, TextInput } from "flowbite-react";
-import { HiChartPie } from "react-icons/hi";
-import { FaPerson } from "react-icons/fa6";
-import { GiVote } from "react-icons/gi";
-import { CiCircleList } from "react-icons/ci";
 import { logout } from "../../redux/authSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation, Link, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { IoCreateSharp, IoExitOutline, IoListSharp } from "react-icons/io5";
+import { Button, Sidebar, Modal, Label, TextInput } from "flowbite-react";
+import { HiChartPie } from "react-icons/hi";
+import { FaPerson } from "react-icons/fa6";
+import { GiVote } from "react-icons/gi";
+import { IoExitOutline, IoListSharp } from "react-icons/io5";
 import { toast } from "react-toastify";
 import Loader from "../Loader";
 import { setElections } from "../../redux/electionSlice";
@@ -17,16 +16,12 @@ export default function AdminSidebar() {
   const location = useLocation();
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const elections = useSelector((state) => state.election.electionList);
   const [loading, setLoading] = useState(false);
   const [createElectionModal, setCreateElectionModal] = useState(false);
-  const [openDeleteModal, setOpenDeleteModal] = useState(false);
   const [isOpen, setIsOpen] = useState(true);
-  const [isCollapsed, setIsCollapsed] = useState(true);
   const [name, setName] = useState("");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
-  const today = new Date();
 
   useEffect(() => {
     const handleResize = () => {
@@ -75,20 +70,6 @@ export default function AdminSidebar() {
     } finally {
       setLoading(false);
     }
-  };
-
-  const handleNavigation = (path, election) => {
-     navigate(path, {
-       state: {
-         Ename: election.name,
-         startDate: election.startDate,
-         endDate: election.endDate,
-       },
-     });
-    if (window.innerWidth > 768) {
-      window.scrollTo(0, 0);
-    }
-    setIsCollapsed(true);
   };
 
   const handleLogout = () => {
