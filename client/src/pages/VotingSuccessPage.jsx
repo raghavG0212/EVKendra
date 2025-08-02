@@ -6,6 +6,8 @@ import { useSelector, useDispatch } from "react-redux";
 import { logout } from "../redux/authSlice";
 import { toast } from "react-toastify";
 import Loader from "../components/Loader";
+import { Link } from "react-router-dom";
+import { IoExitOutline, IoReturnDownBackOutline } from "react-icons/io5";
 
 export default function VotingSuccessPage() {
   const location = useLocation();
@@ -48,10 +50,10 @@ export default function VotingSuccessPage() {
   }
   return (
     <div className="flex flex-col sm:flex-row justify-evenly items-center min-h-screen">
-      <div className="flex flex-col items-center">
+      <div className="flex flex-col items-center space-y-10">
         <h1 className="text-4xl mb-5">You Successfully Voted</h1>
         {voter && (
-          <Table className="mb-16 border-2 divide-y">
+          <Table className="border-2 divide-y">
             <Table.Head>
               <Table.HeadCell className="border-r">Name</Table.HeadCell>
               <Table.HeadCell className="border-r">Party Name</Table.HeadCell>
@@ -79,9 +81,27 @@ export default function VotingSuccessPage() {
             </Table.Body>
           </Table>
         )}
-        <Button color="success" outline size="xl" onClick={handleLogout}>
-          Logout
-        </Button>
+        <div className="flex flex-col space-y-5 items-center w-full">
+          <Button
+            color="failure"
+            outline
+            onClick={handleLogout}
+            className="w-full"
+          >
+            <div className="flex items-center space-x-2">
+              <span className="text-xl">Logout</span>
+              <IoExitOutline className="text-2xl" />
+            </div>
+          </Button>
+          <Link to="/dashboard" className="w-full">
+            <Button color="success" outline className="w-full">
+              <div className="flex items-center space-x-2">
+                <span className="text-xl">Back to Dashboard</span>
+                <IoReturnDownBackOutline className="text-2xl" />
+              </div>
+            </Button>
+          </Link>
+        </div>
       </div>
       <img src="/tick.webp" alt="Tick" height="250px" width="250px" />
     </div>

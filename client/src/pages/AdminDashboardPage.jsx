@@ -22,7 +22,7 @@ export default function AdminDashboardPage() {
 
   return (
     <div className="min-h-screen flex flex-col md:flex-row cursor-default">
-      <div className="md:w-56">
+      <div className="md:w-60">
         <AdminSidebarComp />
       </div>
       

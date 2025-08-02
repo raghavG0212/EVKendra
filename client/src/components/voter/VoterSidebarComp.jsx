@@ -1,20 +1,19 @@
+import { FaPerson } from "react-icons/fa6";
+import { useLocation, Link, useNavigate } from "react-router-dom";
 import { logout } from "../../redux/authSlice";
 import { useDispatch } from "react-redux";
-import { useLocation, Link, useNavigate } from "react-router-dom";
-import { useState, useEffect } from "react";
-import { HiChartPie } from "react-icons/hi";
-import { FaPerson } from "react-icons/fa6";
+import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
+import { clearVoteStatus } from "../../redux/voterSlice";
 import { GiVote } from "react-icons/gi";
 import { IoExitOutline, IoListSharp } from "react-icons/io5";
-import { toast } from "react-toastify";
-import { MdManageAccounts } from "react-icons/md";
 
-export default function AdminSidebarComp() {
+export default function VoterSidebarComp() {
   const location = useLocation();
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
   const [isOpen, setIsOpen] = useState(true);
   const [tab, setTab] = useState("");
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const urlParams = new URLSearchParams(location.search);
@@ -37,13 +36,14 @@ export default function AdminSidebarComp() {
 
   const handleLogout = () => {
     dispatch(logout());
+    dispatch(clearVoteStatus());
     toast.success("You logged out successfully");
     navigate("/");
-	window.scrollTo(0,0);
+    window.scrollTo(0, 0);
   };
 
   return (
-    <div className="flex flex-col md:justify-between bg-slate-50 dark:bg-slate-950 h-full">
+    <div className="flex flex-col md:justify-between bg-slate-100 dark:bg-slate-950 h-full">
       {/* content */}
       <div>
         {/* heading */}
@@ -71,56 +71,35 @@ export default function AdminSidebarComp() {
         </h1>
         <div className="h-[3px] w-full bg-gradient-to-r from-slate-200 via-slate-300 to-slate-500 dark:from-slate-400 dark:via-slate-500 dark:to-slate-700" />
 
+        {/* content */}
         <div className={`${isOpen ? "block" : "hidden"}`}>
-          <Link to="/admin-dashboard?tab=dashboard">
+          <Link to="/dashboard/?tab=elections">
             <div
               className={`flex flex-row  items-center py-4 px-2 gap-x-3 transition-all duration-150 ease-in-out hover:bg-slate-200 dark:hover:bg-slate-800 ${
-                (tab === "dashboard" || !tab) &&
+                (tab === "elections" || !tab) &&
                 "bg-slate-200 dark:bg-slate-800"
               }`}
             >
-              <HiChartPie className="text-3xl" />
-              <span>Dashboard</span>
-            </div>
-          </Link>
-          <div className="h-[3px] w-full bg-gradient-to-r from-slate-200 via-slate-300 to-slate-500 dark:from-slate-400 dark:via-slate-500 dark:to-slate-700" />
-          <Link to="/admin-dashboard?tab=elections">
-            <div
-              className={`flex flex-row  items-center py-4 px-2 gap-x-3 transition-all duration-150 ease-in-out hover:bg-slate-200 dark:hover:bg-slate-800 ${
-                tab === "elections" && "bg-slate-200 dark:bg-slate-800"
-              }`}
-            >
               <GiVote className="text-3xl" />
-              <span className="mt-2">Elections</span>
+              <span>Elections</span>
             </div>
           </Link>
           <div className="h-[3px] w-full bg-gradient-to-r from-slate-200 via-slate-300 to-slate-500 dark:from-slate-400 dark:via-slate-500 dark:to-slate-700" />
-          <Link to="/admin-dashboard?tab=voter-management">
+
+          <Link to="/dashboard/?tab=profile">
             <div
-              className={`flex flex-row  items-center py-4 px-2 gap-x-3  transition-all duration-150 ease-in-out hover:bg-slate-200 dark:hover:bg-slate-800 ${
-                tab === "voter-management" && "bg-slate-200 dark:bg-slate-800"
-              }`}
-            >
-              <MdManageAccounts className="text-3xl" />
-              <span className="mt-1">Manage Voters</span>
-            </div>
-          </Link>
-          <div className="h-[3px] w-full bg-gradient-to-r from-slate-200 via-slate-300 to-slate-500 dark:from-slate-400 dark:via-slate-500 dark:to-slate-700" />
-          <Link to="/admin-dashboard?tab=profile">
-            <div
-              className={`flex flex-row items-center py-4 px-2 gap-x-3 transition-all duration-150 ease-in-out hover:bg-slate-200 dark:hover:bg-slate-800 ${
+              className={`flex flex-row  items-center py-4 px-2 gap-x-3 transition-all duration-150 ease-in-out hover:bg-slate-200 dark:hover:bg-slate-800   ${
                 tab === "profile" && "bg-slate-200 dark:bg-slate-800"
               }`}
             >
               <FaPerson className="text-3xl" />
-              <span className="mt-2">Profile</span>
+              <span>Profile</span>
             </div>
           </Link>
           <div className="h-[3px] w-full bg-gradient-to-r from-slate-200 via-slate-300 to-slate-500 dark:from-slate-400 dark:via-slate-500 dark:to-slate-700" />
         </div>
       </div>
       {/* logout */}
-
       <div className={`w-full ${isOpen ? "block" : "hidden"}`}>
         <div className="hidden md:block h-[3px] w-full bg-gradient-to-r from-slate-200 via-slate-300 to-slate-500 dark:from-slate-400 dark:via-slate-500 dark:to-slate-700" />
         <button className="w-full" onClick={handleLogout}>

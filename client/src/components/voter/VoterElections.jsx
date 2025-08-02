@@ -1,37 +1,22 @@
-import VoterSideBar from "./VoterSidebar";
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { useLocation, useNavigate } from "react-router-dom";
-import { setElections, deleteElection } from "../../redux/electionSlice";
+import { useNavigate } from "react-router-dom";
 import {
-  Button,
-  Label,
-  Modal,
   Table,
-  TextInput,
-  Spinner,
   Pagination,
 } from "flowbite-react";
 import { MdOutlineFactCheck } from "react-icons/md";
-import { RiDeleteBin2Line } from "react-icons/ri";
-import { HiOutlineExclamationCircle, HiOutlinePencil } from "react-icons/hi";
 import { toast } from "react-toastify";
 import Loader from "../Loader";
 
 export default function VoterElections() {
-  const location = useLocation();
   const [elections, setElections] = useState([]);
   const [filterType, setFilterType] = useState("live");
   const [electionBar, setElectionBar] = useState(true);
   const [loading, setLoading] = useState(false);
-  const [isOpen, setIsOpen] = useState(true);
-  const [isCollapsed, setIsCollapsed] = useState(true);
-  const dispatch = useDispatch();
   const navigate = useNavigate();
   const today = new Date();
   const [currentPage, setCurrentPage] = useState(1);
-  const onPageChange = (page) => setCurrentPage(page);
 
   useEffect(() => {
     const fetchElections = async () => {
@@ -78,7 +63,7 @@ export default function VoterElections() {
   );
 
    const handleNavigation = (election) => {
-     navigate(`/election/${election._id}/vote`, {
+     navigate(`/dashboard?tab=elections&electionId=${election._id}`, {
        state: {
          Ename: election.name,
          startDate: election.startDate,
@@ -96,129 +81,118 @@ export default function VoterElections() {
 	 }
 
   return (
-    <div className="flex flex-col md:flex-row min-h-screen">
-      <VoterSideBar className="h-full md:w-60" />
-      <div className="flex-grow cursor-default">
-        <div className="flex flex-col">
-          <div className="flex justify-between pt-3 px-3">
-            <button
-              onClick={() => {
-                setElectionBar((prev) => !prev);
-              }}
-            >
-              <div className="flex flex-row hover:opacity-80 active:opacity-70">
-                <h1 className="p-2 font-semibold text-xl sm:text-2xl uppercase font-serif">
-                  Elections
-                </h1>
-                <div
-                  className={`flex transition-all duration-200 ease-in-out ${
-                    electionBar && "rotate-90 ml-1.5"
-                  }`}
-                >
-                  <div className="h-7 w-1 bg-red-600 mr-1 mt-2"></div>
-                  <div className="h-7 w-1 bg-blue-700 mt-2"></div>
-                </div>
+    <div className="flex-grow cursor-default">
+      <div className="flex flex-col">
+        <div className="flex justify-between pt-3 px-3">
+          <button
+            onClick={() => {
+              setElectionBar((prev) => !prev);
+            }}
+          >
+            <div className="flex flex-row hover:opacity-80 active:opacity-70">
+              <h1 className="p-2 font-semibold text-xl sm:text-2xl uppercase font-serif">
+                Elections
+              </h1>
+              <div
+                className={`flex transition-all duration-200 ease-in-out ${
+                  electionBar && "rotate-90 ml-1.5"
+                }`}
+              >
+                <div className="h-7 w-1 bg-red-600 mr-1 mt-2"></div>
+                <div className="h-7 w-1 bg-blue-700 mt-2"></div>
               </div>
-            </button>
-          </div>
-          <div
-            className={` flex flex-row overflow-hidden transition-all duration-500 ease-in-out transform  bg-gradient-to-r from-blue-200 dark:from-blue-400
+            </div>
+          </button>
+        </div>
+        <div
+          className={` flex flex-row overflow-hidden transition-all duration-500 ease-in-out transform  bg-gradient-to-r from-blue-200 dark:from-blue-400
 		${
       electionBar
         ? "max-h-40 opacity-100 scale-y-100"
         : "max-h-0 opacity-0 scale-y-0"
     }
 	  `}
-          >
-            {["live", "ended"].map((type) => (
-              <div
-                key={type}
-                className={`cursor-pointer font-semibold text-lg sm:text-xl transition-all duration-200 ease-in-out flex-grow py-2 text-center hover:text-violet-950  dark:hover:text-white  text-violet-700 dark:text-violet-100 uppercase  ${
-                  filterType === type
-                    ? "border-b-4 border-b-violet-950 dark:border-b-white bg-violet-100 dark:bg-violet-700"
-                    : ""
-                }`}
-                onClick={() => setFilterType(type)}
-              >
-                {type}
-              </div>
-            ))}
-          </div>
-          <Table className="shadow-md mt-6 mb-16">
-            <Table.Head>
-              <Table.HeadCell className="border-r">Name</Table.HeadCell>
-              <Table.HeadCell className="border-r">
-                Active Period
-              </Table.HeadCell>
-              <Table.HeadCell className="border-r">Candidates</Table.HeadCell>
-            </Table.Head>
-            <Table.Body className="divide-y">
-              {filteredElections.length === 0 ? (
-                <tr>
-                  <td
-                    colSpan="4"
-                    className="text-center py-6 text-lg font-semibold text-gray-500"
-                  >
-                    No elections available.
-                  </td>
-                </tr>
-              ) : (
-                paginatedElections.map((election) => (
-                  <Table.Row
-                    key={election._id}
-                    className="hover:bg-slate-200 dark:hover:bg-slate-900"
-                    onClick={() => handleNavigation(election)}
-                  >
-                    <Table.Cell className="font-semibold text-wrap cursor-pointer">
-                      <div className="flex items-center">
-                        <span className={`sm:text-[16px]`}>
-                          {election.name}
-                        </span>
-                         
-                        {election.result?.winner && (
-                          <MdOutlineFactCheck className="text-green-600 dark:text-green-700 text-xl mt-1 mx-4" />
-                        )}
-                      </div>
-                    </Table.Cell>
-
-                    <Table.Cell className={`md:text-lg font-medium `}>
-                      {new Date(election.startDate).toLocaleDateString(
-                        "en-GB",
-                        {
-                          day: "2-digit",
-                          month: "2-digit",
-                          year: "2-digit",
-                        }
+        >
+          {["live", "ended"].map((type) => (
+            <div
+              key={type}
+              className={`cursor-pointer font-semibold text-lg sm:text-xl transition-all duration-200 ease-in-out flex-grow py-2 text-center hover:text-violet-950  dark:hover:text-white  $dark:text-violet-100 uppercase  ${
+                filterType === type
+                  ? "border-b-4 border-b-violet-950 dark:border-b-white bg-violet-100 dark:bg-violet-700"
+                  : ""
+              }`}
+              onClick={() => setFilterType(type)}
+            >
+              {type}
+            </div>
+          ))}
+        </div>
+        <Table className="shadow-md mt-6 mb-16">
+          <Table.Head>
+            <Table.HeadCell className="border-r">Name</Table.HeadCell>
+            <Table.HeadCell className="border-r">Active Period</Table.HeadCell>
+            <Table.HeadCell className="border-r">Candidates</Table.HeadCell>
+          </Table.Head>
+          <Table.Body className="divide-y">
+            {filteredElections.length === 0 ? (
+              <tr>
+                <td
+                  colSpan="4"
+                  className="text-center py-6 text-lg font-semibold text-gray-500"
+                >
+                  No elections available.
+                </td>
+              </tr>
+            ) : (
+              paginatedElections.map((election) => (
+                <Table.Row
+                  key={election._id}
+                  className="hover:bg-slate-200 dark:hover:bg-slate-900"
+                  onClick={() => handleNavigation(election)}
+                >
+                  <Table.Cell className="font-semibold text-wrap cursor-pointer">
+                    <div className="flex items-center">
+                      <span className={`sm:text-[16px]`}>{election.name}</span> 
+                      {election.result?.winner && (
+                        <MdOutlineFactCheck className="text-green-600 dark:text-green-700 text-xl mt-1 mx-4" />
                       )}
-                      <br />
-                      {new Date(election.endDate).toLocaleDateString("en-GB", {
-                        day: "2-digit",
-                        month: "2-digit",
-                        year: "2-digit",
-                      })}
-                    </Table.Cell>
+                    </div>
+                  </Table.Cell>
 
-                    <Table.Cell className="text-[19px]">
-                      {election.candidates.length}
-                    </Table.Cell>
-                  </Table.Row>
-                ))
-              )}
-            </Table.Body>
-          </Table>
+                  <Table.Cell className={`md:text-lg font-medium `}>
+                    {new Date(election.startDate).toLocaleDateString("en-GB", {
+                      day: "2-digit",
+                      month: "2-digit",
+                      year: "2-digit",
+                    })}
+                    <br />
+                    {new Date(election.endDate).toLocaleDateString("en-GB", {
+                      day: "2-digit",
+                      month: "2-digit",
+                      year: "2-digit",
+                    })}
+                  </Table.Cell>
 
-          <div className="flex overflow-x-auto sm:justify-center mb-10">
-            <Pagination
-              layout="navigation"
-              currentPage={currentPage}
-              totalPages={totalPages}
-              onPageChange={(page) => {
-                setCurrentPage(page);
-                window.scrollTo(0, 0);
-              }}
-              showIcons
-            />
-          </div>
+                  <Table.Cell className="text-[19px]">
+                    {election.candidates.length}
+                  </Table.Cell>
+                </Table.Row>
+              ))
+            )}
+          </Table.Body>
+        </Table>
+
+        <div className="flex overflow-x-auto sm:justify-center mb-10">
+          <Pagination
+            layout="navigation"
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={(page) => {
+              setCurrentPage(page);
+              window.scrollTo(0, 0);
+            }}
+            showIcons
+          />
         </div>
       </div>
     </div>

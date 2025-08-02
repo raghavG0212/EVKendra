@@ -46,7 +46,7 @@ export default function HomePage() {
                 {currentUser.name}
               </span>
             </div>
-            <Link to={isAdmin ? "/admin-dashboard" : "/voter-election-dashboard"}>
+            <Link to={isAdmin ? "/admin-dashboard" : "/dashboard"}>
               <Button
                 gradientDuoTone="purpleToBlue"
                 outline

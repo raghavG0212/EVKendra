@@ -17,7 +17,6 @@ import {
 } from "chart.js";
 import { Line } from "react-chartjs-2";
 import axios from "axios";
-import AdminSidebar from "./AdminSidebar";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { RiDeleteBin2Line, RiAdminLine } from "react-icons/ri";
