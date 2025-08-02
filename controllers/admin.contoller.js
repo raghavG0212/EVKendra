@@ -48,11 +48,15 @@ const adminLogin = async (req, res) => {
 
 
     const {password : _, ...rest} = isAdmin._doc;
-    res.status(200).json({
-      message: "Login successful",
-      token,
-      user: rest,
-    });
+    res
+      .status(200)
+      .cookie("access_token", token, {
+        httpOnly: true,
+      })
+      .json({
+        message: "Login successful",
+        user: rest,
+      });
   } catch (err) {
     res.status(500).json({ message: "Server error", error: err.message });
   }
