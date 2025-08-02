@@ -180,132 +180,125 @@ export default function AdminDashboard() {
     return <Loader />;
   }
   return (
-    <div className="flex flex-col md:flex-row min-h-screen cursor-default ">
-      <AdminSidebar className="h-full md:w-60" />
-      <div className="flex-grow ">
-        <div className="flex flex-col h-full md:mx-8 mb-10">
-          <div className="grid grid-cols-1 450px:grid-cols-2 1016px:grid-cols-3 gap-3 m-4 p-2 italic lowercase font-serif">
-            <Card className="text-center text-2xl lg:text-3xl bg-slate-100 mb-3 sm:mb-0">
-              <h1>Voters</h1>
-              <div className="flex justify-center text-5xl">
-                <MdHowToVote />
-              </div>
-              <p className="text-blue-600">{voters}</p>
-            </Card>
-            <Card className="text-center text-2xl lg:text-3xl bg-slate-100 mb-3 sm:mb-0">
-              <h1>Admins</h1>
-              <div className="flex justify-center text-5xl">
-                <RiAdminLine />
-              </div>
-              <p className="text-blue-600">{admins.length}</p>
-            </Card>
-            <Card className="text-center text-2xl lg:text-3xl bg-slate-100 mb-3 sm:mb-0">
-              <h1>Elections</h1>
-              <div className="flex justify-center text-5xl">
-                <GiVote />
-              </div>
-              <p className="text-blue-600">{elections.length}</p>
-            </Card>
+    <div className="flex-grow">
+      <div className="flex flex-col h-full md:mx-8 mb-10">
+        <div className="grid grid-cols-1 450px:grid-cols-2 1016px:grid-cols-3 gap-3 m-4 p-2 italic lowercase font-serif">
+          <Card className="text-center text-2xl lg:text-3xl bg-slate-100 mb-3 sm:mb-0">
+            <h1>Voters</h1>
+            <div className="flex justify-center text-5xl">
+              <MdHowToVote />
+            </div>
+            <p className="text-blue-600">{voters}</p>
+          </Card>
+          <Card className="text-center text-2xl lg:text-3xl bg-slate-100 mb-3 sm:mb-0">
+            <h1>Admins</h1>
+            <div className="flex justify-center text-5xl">
+              <RiAdminLine />
+            </div>
+            <p className="text-blue-600">{admins.length}</p>
+          </Card>
+          <Card className="text-center text-2xl lg:text-3xl bg-slate-100 mb-3 sm:mb-0">
+            <h1>Elections</h1>
+            <div className="flex justify-center text-5xl">
+              <GiVote />
+            </div>
+            <p className="text-blue-600">{elections.length}</p>
+          </Card>
+        </div>
+
+        <div className="flex flex-col xl:flex-row gap-4">
+          <div className="flex flex-col xl:flex-grow">
+            <Heading heading="voter enrollment" />
+            <div className="mt-5 flex justify-center">
+              <Line data={chartData} options={chartOptions} />
+            </div>
           </div>
 
-          <div className="flex flex-col xl:flex-row gap-4">
-            <div className="flex flex-col xl:flex-grow">
-              <Heading heading="voter enrollment" />
-              <div className="mt-5 flex justify-center">
-                <Line data={chartData} options={chartOptions} />
-              </div>
-            </div>
-
-            <div className="flex flex-col xl:w-1/2 xl:mx-auto">
-              <Heading heading="executive board" />
-              <div className="m-5">
-                <Table className="shadow-md mt-4">
-                  <Table.Head>
-                    <Table.HeadCell className="border-r">Name</Table.HeadCell>
-                    <Table.HeadCell>Actions</Table.HeadCell>
-                  </Table.Head>
-                  <Table.Body className="divide-y">
-                    {admins.map((admin) => (
-                      <Table.Row key={admin._id}>
-                        <Table.Cell className="border-r font-semibold flex justify-between items-center">
-                          <span
-                            className={`${
-                              currentUser._id === admin._id && "text-blue-600"
-                            } text-[20px] `}
-                          >
-                            {" "}
-                            {admin.name}
+          <div className="flex flex-col xl:w-1/2 xl:mx-auto">
+            <Heading heading="executive board" />
+            <div className="m-5">
+              <Table className="shadow-md mt-4">
+                <Table.Head>
+                  <Table.HeadCell className="border-r">Name</Table.HeadCell>
+                  <Table.HeadCell>Actions</Table.HeadCell>
+                </Table.Head>
+                <Table.Body className="divide-y">
+                  {admins.map((admin) => (
+                    <Table.Row key={admin._id}>
+                      <Table.Cell className="border-r font-semibold flex justify-between items-center">
+                        <span
+                          className={`${
+                            currentUser._id === admin._id && "text-blue-600"
+                          } text-[20px] `}
+                        >
+                          {" "}
+                          {admin.name}
+                        </span>
+                        {admin._id === creator._id && (
+                          <span className="text-[10px] sm:text-[16px] capitalize bg-cyan-600 text-white px-3 sm:py-1 rounded-md font-mono mt-1.5 sm:mt-0">
+                            creator
                           </span>
-                          {admin._id === creator._id && (
-                            <span className="text-[10px] sm:text-[16px] capitalize bg-cyan-600 text-white px-3 sm:py-1 rounded-md font-mono mt-1.5 sm:mt-0">
-                              creator
-                            </span>
-                          )}
-                        </Table.Cell>
-                        <Table.Cell>
-                          {currentUser._id === admin._id ||
-                          admin._id === creator._id ? (
-                            <button>
-                              <RiDeleteBin2Line className="text-2xl text-gray-300 dark:text-gray-600" />
-                            </button>
-                          ) : (
-                            <button
-                              className="text-red-500 hover:scale-110 transition-all duration-150 ease-in-out"
-                              onClick={() => {
-                                setAdminToDelete(admin._id);
-                                setOpenDeleteModal(true);
-                              }}
-                            >
-                              <RiDeleteBin2Line className="text-2xl hover:text-red-700" />
-                            </button>
-                          )}
-                        </Table.Cell>
-                      </Table.Row>
-                    ))}
-                  </Table.Body>
-                </Table>
-              </div>
+                        )}
+                      </Table.Cell>
+                      <Table.Cell>
+                        {currentUser._id === admin._id ||
+                        admin._id === creator._id ? (
+                          <button>
+                            <RiDeleteBin2Line className="text-2xl text-gray-300 dark:text-gray-600" />
+                          </button>
+                        ) : (
+                          <button
+                            className="text-red-500 hover:scale-110 transition-all duration-150 ease-in-out"
+                            onClick={() => {
+                              setAdminToDelete(admin._id);
+                              setOpenDeleteModal(true);
+                            }}
+                          >
+                            <RiDeleteBin2Line className="text-2xl hover:text-red-700" />
+                          </button>
+                        )}
+                      </Table.Cell>
+                    </Table.Row>
+                  ))}
+                </Table.Body>
+              </Table>
             </div>
           </div>
+        </div>
 
-          <Heading heading="Election Overview" />
+        <Heading heading="Election Overview" />
 
-          <div className="grid grid-cols-1 450px:grid-cols-2 1016px:grid-cols-3 xl:grid-cols-4 gap-3 m-4 p-3 italic font-serif">
-            <Card className="text-center text-2xl lg:text-3xl bg-slate-100 mb-3 sm:mb-0">
-              <h1>upcoming</h1>
-              <div className="flex justify-center text-5xl">
-                <MdOutlineEventAvailable />
-              </div>
-              <p className="text-blue-600">{upcomingElections.length}</p>
-            </Card>
-            <Card className="text-center text-2xl lg:text-3xl bg-slate-100 mb-3 sm:mb-0">
-              <h1>live</h1>
-              <div className="flex justify-center text-5xl">
-                <MdLiveTv />
-              </div>
-              <p className="text-blue-600">{liveElections.length}</p>
-            </Card>
-            <Card className="text-center text-2xl lg:text-3xl bg-slate-100 mb-3 sm:mb-0">
-              <h1>ended</h1>
-              <div className="flex justify-center text-5xl">
-                <MdEventBusy />
-              </div>
-              <p className="text-blue-600">{endedElections.length}</p>
-            </Card>
-            <Card className="text-center text-2xl lg:text-3xl bg-slate-100 mb-3 sm:mb-0">
-              <h1>declared</h1>
-              <div className="flex justify-center text-5xl">
-                <MdOutlineFactCheck />
-              </div>
-              <p className="text-blue-600">{declaredElections.length}</p>
-            </Card>
-          </div>
-
-         
+        <div className="grid grid-cols-1 450px:grid-cols-2 1016px:grid-cols-3 xl:grid-cols-4 gap-3 m-4 p-3 italic font-serif">
+          <Card className="text-center text-2xl lg:text-3xl bg-slate-100 mb-3 sm:mb-0">
+            <h1>upcoming</h1>
+            <div className="flex justify-center text-5xl">
+              <MdOutlineEventAvailable />
+            </div>
+            <p className="text-blue-600">{upcomingElections.length}</p>
+          </Card>
+          <Card className="text-center text-2xl lg:text-3xl bg-slate-100 mb-3 sm:mb-0">
+            <h1>live</h1>
+            <div className="flex justify-center text-5xl">
+              <MdLiveTv />
+            </div>
+            <p className="text-blue-600">{liveElections.length}</p>
+          </Card>
+          <Card className="text-center text-2xl lg:text-3xl bg-slate-100 mb-3 sm:mb-0">
+            <h1>ended</h1>
+            <div className="flex justify-center text-5xl">
+              <MdEventBusy />
+            </div>
+            <p className="text-blue-600">{endedElections.length}</p>
+          </Card>
+          <Card className="text-center text-2xl lg:text-3xl bg-slate-100 mb-3 sm:mb-0">
+            <h1>declared</h1>
+            <div className="flex justify-center text-5xl">
+              <MdOutlineFactCheck />
+            </div>
+            <p className="text-blue-600">{declaredElections.length}</p>
+          </Card>
         </div>
       </div>
-
-
       {/* admin-modal */}
       <Modal
         size="md"

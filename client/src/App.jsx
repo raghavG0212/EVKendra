@@ -9,10 +9,6 @@ import VotingSuccessPage from "./pages/VotingSuccessPage";
 import PrivacyPolicyPage from "./pages/PrivacyPolicyPage";
 import TermsAndConditionsPage from "./pages/Terms&ConditionsPage";
 import AdminLogin from "./pages/AdminLogin";
-import AdminDashboard from "./components/admin/AdminDashboard";
-import AdminProfile from "./components/admin/AdminProfile";
-import Candidates from "./components/admin/Candidates";
-import AdminElections from "./components/admin/AdminElections";
 import VoterElections from "./components/voter/VoterElections";
 import VoterProfile from "./components/voter/VoterProfile";
 import VotingComp from "./components/voter/VotingComp";
@@ -20,6 +16,7 @@ import OnlyVoter from "./components/PrivateRoutes/OnlyVoter";
 import OnlyAdmin from "./components/PrivateRoutes/OnlyAdmin";
 import { Bounce, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import AdminDashboardPage from "./pages/AdminDashboardPage";
 
 export default function App() {
   return (
@@ -32,16 +29,16 @@ export default function App() {
         <Route path="/sign-up" element={<SignUp />} />
         <Route path="/about" element={<AboutPage />} />
         <Route element={<OnlyVoter />}>
-          <Route path='/voter-election-dashboard' element={<VoterElections/>}/>
+          <Route
+            path="/voter-election-dashboard"
+            element={<VoterElections />}
+          />
           <Route path="/voter-profile" element={<VoterProfile />} />
           <Route path="/election/:id/vote" element={<VotingComp />} />
           <Route path="/voting-success" element={<VotingSuccessPage />} />
         </Route>
         <Route element={<OnlyAdmin />}>
-          <Route path="/admin-dashboard" element={<AdminDashboard />} />
-          <Route path="/admin-profile" element={<AdminProfile />} />
-          <Route path="/election/:id/candidates" element={<Candidates />} />
-          <Route path="/admin-election-dashboard" element={<AdminElections />} />
+          <Route path="admin-dashboard" element={<AdminDashboardPage />} />
         </Route>
         <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
         <Route

@@ -10,7 +10,6 @@ import {
 import { useEffect, useState } from "react";
 import { HiOutlineExclamationCircle, HiOutlinePencil } from "react-icons/hi";
 import { MdDelete } from "react-icons/md";
-import AdminSidebar from "./AdminSidebar";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { storage } from "../../firebase/firebase";
 import axios from "axios";
@@ -26,12 +25,13 @@ import { toast } from "react-toastify";
 import Loader from "../Loader";
 import { VscDebugBreakpointLogUnverified } from "react-icons/vsc";
 
-export default function Candidates() {
-  const { id } = useParams();
+export default function Candidates({ electionID }) {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const location = useLocation();
-  const election = useSelector((state) => selectElectionById(state, id));
+  const election = useSelector((state) =>
+    selectElectionById(state, electionID)
+  );
   const { Ename, startDate, endDate } = location.state || {};
   const [candidates, setCandidates] = useState([]);
   const [openCreateModal, setOpenCreateModal] = useState(false);
@@ -64,7 +64,7 @@ export default function Candidates() {
       try {
         setLoading(true);
         const response = await axios.get(
-          `/api/v1/election/${id}/candidates/getAll`
+          `/api/v1/election/${electionID}/candidates/getAll`
         );
         setCandidates(response.data);
       } catch (err) {
@@ -74,15 +74,15 @@ export default function Candidates() {
       }
     };
     fetchCandidates();
-  }, [id]);
+  }, [electionID]);
 
   const handleDeleteElection = async () => {
     setLoading(true);
     try {
       const response = await axios.delete(
-        `/api/v1/election/delete-election/${id}`
+        `/api/v1/election/delete-election/${electionID}`
       );
-      dispatch(deleteElection(id));
+      dispatch(deleteElection(electionID));
       setDeleteElectionModal(false);
       navigate("/admin-dashboard");
       toast.success(response.data.message);
@@ -96,8 +96,8 @@ export default function Candidates() {
   const handleDeclareResult = async () => {
     setLoading(true);
     try {
-      const response = await axios.put(`/api/v1/election/declare-result/${id}`);
-      dispatch(setDeclareElection({ electionID: id, declared: true }));
+      const response = await axios.put(`/api/v1/election/declare-result/${electionID}`);
+      dispatch(setDeclareElection({ electionID: electionID, declared: true }));
       toast.success(response.data.message);
     } catch (err) {
       toast.error(err.response?.data?.message || "Failed to declare result.");
@@ -117,7 +117,7 @@ export default function Candidates() {
         partyLogoURL = await getDownloadURL(snapshot.ref);
       }
       const response = await axios.post(
-        `/api/v1/election/${id}/candidates/create-candidate`,
+        `/api/v1/election/${electionID}/candidates/create-candidate`,
         {
           name: formData.name,
           dob: formData.dob,
@@ -127,7 +127,7 @@ export default function Candidates() {
         }
       );
       const updatedCandidates = await axios.get(
-        `/api/v1/election/${id}/candidates/getAll`
+        `/api/v1/election/${electionID}/candidates/getAll`
       );
       setCandidates(updatedCandidates.data);
       setOpenCreateModal(false);
@@ -150,7 +150,7 @@ export default function Candidates() {
         partyLogoURL = await getDownloadURL(snapshot.ref);
       }
       const response = await fetch(
-        `/api/v1/election/${id}/candidates/edit-candidate/${candidateToEdit}`,
+        `/api/v1/election/${electionID}/candidates/edit-candidate/${candidateToEdit}`,
         {
           method: "PUT",
           headers: {
@@ -166,7 +166,7 @@ export default function Candidates() {
       const data = await response.json();
       if (response.ok) {
         const updatedCandidates = await axios.get(
-          `/api/v1/election/${id}/candidates/getAll`
+          `/api/v1/election/${electionID}/candidates/getAll`
         );
         setCandidates(updatedCandidates.data);
         setOpenEditModal(false);
@@ -185,11 +185,11 @@ export default function Candidates() {
     setLoading(true);
     try {
       const response = await axios.delete(
-        `/api/v1/election/${id}/candidates/delete-candidate/${candidateToDelete}`
+        `/api/v1/election/${electionID}/candidates/delete-candidate/${candidateToDelete}`
       );
       setOpenDeleteModal(false);
       const updatedCandidates = await axios.get(
-        `/api/v1/election/${id}/candidates/getAll`
+        `/api/v1/election/${electionID}/candidates/getAll`
       );
       setCandidates(updatedCandidates.data);
       toast.success(response.data.message);
@@ -210,181 +210,181 @@ export default function Candidates() {
     return <Loader />;
   }
   return (
-    <div className="flex flex-col md:flex-row">
-      <AdminSidebar className="h-full md:w-60" />
-      <div className="flex-grow cursor-default min-h-screen">
-        <div className="flex flex-col">
-          <div className="flex justify-between items-center mt-1 mb-2 p-4 bg-slate-300 dark:bg-slate-700 rounded-md">
-            {Ename !== undefined &&
-            startDate !== undefined &&
-            endDate !== undefined ? (
-              <div className="text-center">
-                <h1 className="text-sm sm:text-lg md:text-xl lg:text-2xl font-semibold font-mono text-stone-900 dark:text-white">
-                  {Ename}
-                </h1>
-                <p className="text-xs sm:text-sm font-light md:text-lg text-stone-700 dark:text-stone-400">
-                  {moment(startDate).format("DD/MM/YYYY")} -{" "}
-                  {moment(endDate).format("DD/MM/YYYY")}
-                </p>
-              </div>
-            ) : (
-              <div />
-            )}
-            <div className="flex gap-2">
-              {election?.declared ? (
-                <div className="py-2 px-3 dark:bg-slate-800  bg-slate-100 text-green-600 font-semibold rounded-lg border dark:border-white border-black">
-                  Declared
-                </div>
-              ) : (
-                <Button color="success" onClick={handleDeclareResult}>
-                  Declare
-                </Button>
-              )}
-              <Button
-                onClick={() => setDeleteElectionModal(true)}
-                color="failure"
-              >
-                Delete
-              </Button>
-            </div>
-          </div>
-          {candidates.length === 0 ? (
-            <div className="flex flex-col text-center items-center mt-6 gap-2 bg-gray-400 m-2 p-6 md:p-12 dark:bg-slate-950">
-              <HiOutlineExclamationCircle className="text-4xl mb-4" />
-              <h1 className="text-center text-3xl font-semibold uppercase">
-                No candidates added
+    <div className="flex-grow cursor-default min-h-screen">
+      <div className="flex flex-col">
+        <div className="flex justify-between items-center mt-1 mb-2 p-4 bg-slate-300 dark:bg-slate-700 rounded-md">
+          {Ename !== undefined &&
+          startDate !== undefined &&
+          endDate !== undefined ? (
+            <div className="text-center">
+              <h1 className="text-sm sm:text-lg md:text-xl lg:text-2xl font-semibold font-mono text-stone-900 dark:text-white">
+                {Ename}
               </h1>
+              <p className="text-xs sm:text-sm font-light md:text-lg text-stone-700 dark:text-stone-400">
+                {moment(startDate).format("DD/MM/YYYY")} -{" "}
+                {moment(endDate).format("DD/MM/YYYY")}
+              </p>
             </div>
           ) : (
-            <Table
-              className={`border-b dark:text-white ${
-                election?.declared && "mb-48"
-              }`}
-            >
-              <Table.Head>
-                <Table.HeadCell className="hidden lg:table-cell border-r">
-                  S No.
-                </Table.HeadCell>
-                <Table.HeadCell className="border-r">Name</Table.HeadCell>
-                <Table.HeadCell className="border-r hidden 450px:table-cell">
-                  Party Name
-                </Table.HeadCell>
-                <Table.HeadCell className="hidden sm:block border-r">
-                  Party Logo
-                </Table.HeadCell>
-                <Table.HeadCell
-                  className={`${!election?.declared && "border-r"}`}
-                >
-                  No. Of Votes
-                </Table.HeadCell>
-                {!election?.declared && (
-                  <Table.HeadCell>
-                    <div className="md:ml-2">Actions</div>
-                  </Table.HeadCell>
-                )}
-              </Table.Head>
-              <Table.Body className="divide-y">
-                {candidates
-                  .sort((a, b) => a.name.localeCompare(b.name))
-                  .map((candidate, index) => (
-                    <Table.Row key={candidate._id}>
-                      <Table.Cell className="text-lg font-bold hidden lg:table-cell align-middle border-r">
-                        {index + 1}
-                      </Table.Cell>
-                      <Table.Cell className="border-r">
-                        <div className="flex flex-col">
-                          <span className="uppercase font-semibold ">
-                            {candidate.name}
-                          </span>
-                          <span className="450px:hidden">
-                            ({candidate.partyName})
-                          </span>
-                        </div>
-                      </Table.Cell>
-                      <Table.Cell className="border-r hidden 450px:table-cell">
-                        {candidate.partyName}
-                      </Table.Cell>
-                      <Table.Cell className="hidden sm:table-cell border-r">
-                        <div className="ml-3 md:ml-0 880px:ml-3 h-12 w-12 flex justify-center items-center bg-white dark:border-gray-700 rounded-full">
-                          <img
-                            src={candidate.partyLogo}
-                            alt={candidate.partyName}
-                            className="h-12 w-12 rounded-full"
-                            loading="lazy"
-                          />
-                        </div>
-                      </Table.Cell>
-                      <Table.Cell
-                        className={`${!election?.declared && "border-r"}`}
-                      >
-                        {candidate.votes}
-                      </Table.Cell>
-                      {!election?.declared && (
-                        <Table.Cell>
-                          <div className="flex flex-col md:flex-row md:space-x-2 space-y-1 md:space-y-0">
-                            <Button
-                              color="success"
-                              size="sm"
-                              onClick={() => {
-                                setOpenEditModal(true);
-                                setCandidateToEdit(candidate._id);
-                              }}
-                            >
-                              <HiOutlinePencil />
-                            </Button>
-                            <Button
-                              color="failure"
-                              size="sm"
-                              onClick={() => {
-                                setOpenDeleteModal(true);
-                                setCandidateToDelete(candidate._id);
-                              }}
-                            >
-                              <MdDelete />
-                            </Button>
-                          </div>
-                        </Table.Cell>
-                      )}
-                    </Table.Row>
-                  ))}
-              </Table.Body>
-            </Table>
+            <div />
           )}
-          {/* create button */}
-          {!election?.declared && (
-            <div className="flex justify-center mt-20 mb-28">
-              <Button
-                gradientDuoTone="redToYellow"
-                outline
-                onClick={() => setOpenCreateModal(true)}
-              >
-                Add New Candidate
+          <div className="flex gap-2">
+            {election?.declared ? (
+              <div className="py-2 px-3 dark:bg-slate-800  bg-slate-100 text-green-600 font-semibold rounded-lg border dark:border-white border-black">
+                Declared
+              </div>
+            ) : (
+              <Button color="success" onClick={handleDeclareResult}>
+                Declare
               </Button>
-            </div>
-          )}
+            )}
+            <Button
+              onClick={() => setDeleteElectionModal(true)}
+              color="failure"
+            >
+              Delete
+            </Button>
+          </div>
         </div>
-
-        <div className="m-4 flex p-3 flex-col capitalize border-[3px] border-cyan-600">
-          <h1 className="mb-2 text-red-600">Important notes :-</h1>
-          <span className="flex items-center gap-1">
-            <VscDebugBreakpointLogUnverified className="text-red-600" />
-            live elections can neither be declared nor deleted.
-          </span>
-          <span className="flex items-center gap-1">
-            <VscDebugBreakpointLogUnverified className="text-red-600" />
-            ended elections can either be declared or deleted.
-          </span>
-          <span className="flex items-center gap-1">
-            <VscDebugBreakpointLogUnverified className="text-red-600" />
-            Upcoming elections can only be deleted.
-          </span>
-          <span className="flex items-center gap-1">
-            <VscDebugBreakpointLogUnverified className="text-red-600" />
-            Declaration of elections can only be done once and must be on time.
-          </span>
-        </div>
+        {candidates.length === 0 ? (
+          <div className="flex flex-col text-center items-center mt-6 gap-2 bg-gray-400 m-2 p-6 md:p-12 dark:bg-slate-950">
+            <HiOutlineExclamationCircle className="text-4xl mb-4" />
+            <h1 className="text-center text-3xl font-semibold uppercase">
+              No candidates added
+            </h1>
+          </div>
+        ) : (
+          <Table
+            className={`border-b dark:text-white ${
+              election?.declared && "mb-48"
+            }`}
+          >
+            <Table.Head>
+              <Table.HeadCell className="hidden lg:table-cell border-r">
+                S No.
+              </Table.HeadCell>
+              <Table.HeadCell className="border-r">Name</Table.HeadCell>
+              <Table.HeadCell className="border-r hidden 450px:table-cell">
+                Party Name
+              </Table.HeadCell>
+              <Table.HeadCell className="hidden sm:block border-r">
+                Party Logo
+              </Table.HeadCell>
+              <Table.HeadCell
+                className={`${!election?.declared && "border-r"}`}
+              >
+                No. Of Votes
+              </Table.HeadCell>
+              {!election?.declared && (
+                <Table.HeadCell>
+                  <div className="md:ml-2">Actions</div>
+                </Table.HeadCell>
+              )}
+            </Table.Head>
+            <Table.Body className="divide-y">
+              {candidates
+                .sort((a, b) => a.name.localeCompare(b.name))
+                .map((candidate, index) => (
+                  <Table.Row key={candidate._id}>
+                    <Table.Cell className="text-lg font-bold hidden lg:table-cell align-middle border-r">
+                      {index + 1}
+                    </Table.Cell>
+                    <Table.Cell className="border-r">
+                      <div className="flex flex-col">
+                        <span className="uppercase font-semibold ">
+                          {candidate.name}
+                        </span>
+                        <span className="450px:hidden">
+                          ({candidate.partyName})
+                        </span>
+                      </div>
+                    </Table.Cell>
+                    <Table.Cell className="border-r hidden 450px:table-cell">
+                      {candidate.partyName}
+                    </Table.Cell>
+                    <Table.Cell className="hidden sm:table-cell border-r">
+                      <div className="ml-3 md:ml-0 880px:ml-3 h-12 w-12 flex justify-center items-center bg-white dark:border-gray-700 rounded-full">
+                        <img
+                          src={candidate.partyLogo}
+                          alt={candidate.partyName}
+                          className="h-12 w-12 rounded-full"
+                          loading="lazy"
+                        />
+                      </div>
+                    </Table.Cell>
+                    <Table.Cell
+                      className={`${!election?.declared && "border-r"}`}
+                    >
+                      {candidate.votes}
+                    </Table.Cell>
+                    {!election?.declared && (
+                      <Table.Cell>
+                        <div className="flex flex-col md:flex-row md:space-x-2 space-y-1 md:space-y-0">
+                          <Button
+                            color="success"
+                            size="sm"
+                            onClick={() => {
+                              setOpenEditModal(true);
+                              setCandidateToEdit(candidate._id);
+                            }}
+                          >
+                            <HiOutlinePencil />
+                          </Button>
+                          <Button
+                            color="failure"
+                            size="sm"
+                            onClick={() => {
+                              setOpenDeleteModal(true);
+                              setCandidateToDelete(candidate._id);
+                            }}
+                          >
+                            <MdDelete />
+                          </Button>
+                        </div>
+                      </Table.Cell>
+                    )}
+                  </Table.Row>
+                ))}
+            </Table.Body>
+          </Table>
+        )}
+        {/* create button */}
+        {!election?.declared && (
+          <div className="flex justify-center mt-20 mb-28">
+            <Button
+              gradientDuoTone="redToYellow"
+              outline
+              onClick={() => setOpenCreateModal(true)}
+            >
+              Add New Candidate
+            </Button>
+          </div>
+        )}
       </div>
 
+      <div className="m-4 flex p-3 flex-col capitalize border-[3px] border-cyan-600">
+        <h1 className="mb-2 text-red-600">Important notes :-</h1>
+        <span className="flex items-center gap-1">
+          <VscDebugBreakpointLogUnverified className="text-red-600 mt-[3px]" />
+          live elections can neither be declared nor deleted.
+        </span>
+        <span className="flex items-center gap-1">
+          <VscDebugBreakpointLogUnverified className="text-red-600 mt-[3px]" />
+          ended elections can either be declared or deleted.
+        </span>
+        <span className="flex items-center gap-1">
+          <VscDebugBreakpointLogUnverified className="text-red-600 mt-[3px]" />
+          Upcoming elections can only be deleted.
+        </span>
+        <span className="flex items-center gap-1">
+          <VscDebugBreakpointLogUnverified className="text-red-600 mt-[3px]" />
+          Candidate with the majority of votes can't be deleted.
+        </span>
+        <span className="flex items-center gap-1">
+          <VscDebugBreakpointLogUnverified className="text-red-600 mt-[3px]" />
+          Declaration of elections can only be done once and must be on time.
+        </span>
+      </div>
       {/* MODALS */}
       {/* create */}
       <Modal show={openCreateModal} onClose={() => setOpenCreateModal(false)}>
