@@ -147,12 +147,16 @@ export default function VoterElections() {
               paginatedElections.map((election) => (
                 <Table.Row
                   key={election._id}
-                  className="hover:bg-slate-200 dark:hover:bg-slate-900"
+                  className={`hover:bg-slate-200 dark:hover:bg-slate-900 ${
+                    new Date(election.endDate) < today
+                      ? "text-black dark:text-white "
+                      : "text-red-600"
+                  }`}
                   onClick={() => handleNavigation(election)}
                 >
                   <Table.Cell className="font-semibold text-wrap cursor-pointer">
                     <div className="flex items-center">
-                      <span className={`sm:text-[16px]`}>{election.name}</span> 
+                      <span className="text-lg">{election.name}</span> 
                       {election.result?.winner && (
                         <MdOutlineFactCheck className="text-green-600 dark:text-green-700 text-xl mt-1 mx-4" />
                       )}

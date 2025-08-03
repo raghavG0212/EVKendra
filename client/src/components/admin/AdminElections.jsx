@@ -235,12 +235,10 @@ export default function AdminElections() {
                 paginatedElections.map((election) => (
                   <Table.Row
                     key={election._id}
-                    className="hover:bg-slate-200 dark:hover:bg-slate-900"
+                    className="hover:bg-slate-200 dark:hover:bg-slate-900 hover:cursor-pointer"
+                    onClick={() => NavigateToElection(election)}
                   >
-                    <Table.Cell
-                      className="font-semibold  text-wrap cursor-pointer"
-                      onClick={() => NavigateToElection(election)}
-                    >
+                    <Table.Cell className="font-semibold  text-wrap ">
                       <div className="flex items-center">
                         <span
                           className={`sm:text-[16px] ${

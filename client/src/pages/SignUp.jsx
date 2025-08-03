@@ -7,6 +7,7 @@ import {
   TextInput,
   Spinner,
   Modal,
+  Select,
 } from "flowbite-react";
 import { Link } from "react-router-dom";
 import { FaCheckCircle } from "react-icons/fa";
@@ -212,6 +213,30 @@ export default function Login() {
                   )}
                 </div>
               </div>
+            </div>
+            <div className="sm:flex sm:space-x-14">
+              <div className="sm:mt-2 sm:mr-1">
+                <Label
+                  className="text-md"
+                  htmlFor="nationality"
+                  value="Nationality"
+                />
+              </div>
+              <Select
+                id="nationality"
+                required
+                value={formData.nationality}
+                onChange={handleChange}
+                className="w-80 sm:w-64"
+              >
+                <option value="" disabled>
+                  Select your nationality
+                </option>
+                <option value="Indian">Indian</option>
+                <option value="American">American</option>
+                <option value="British">British</option>
+                <option value="Others">Others</option>
+              </Select>
             </div>
 
             <div className="flex gap-2 mt-3">

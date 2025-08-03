@@ -21,6 +21,7 @@ export default function VotingComp({id}) {
   const election = useSelector((state) => selectElectionById(state, id));
   const [candidateID, setCandidateID] = useState(null);
   const { Ename, startDate, endDate } = location.state || {};
+  console.log(currentUser);
 
   useEffect(() => {
     const fetchCandidates = async () => {
@@ -109,23 +110,33 @@ export default function VotingComp({id}) {
                     </div>
                   </Table.Cell>
                   <Table.Cell>
-                    {new Date() > new Date(endDate) ? (
+                    {currentUser.nationality !== "Indian" ? (
                       <span className="text-red-600 sm:text-lg">
-                        Election Ended
+                        Not Eligible
                       </span>
-                    ) : election?.voted ? (
-                      <span className="text-green-600  sm:text-xl">voted</span>
                     ) : (
-                      <Button
-                        gradientDuoTone="pinkToOrange"
-                        className="hover:opacity-70"
-                        onClick={() => {
-                          setShowModal(true);
-                          setCandidateID(candidate._id);
-                        }}
-                      >
-                        Vote
-                      </Button>
+                      <>
+                        {new Date() > new Date(endDate) ? (
+                          <span className="text-red-600 sm:text-lg">
+                            Election Ended
+                          </span>
+                        ) : election?.voted ? (
+                          <span className="text-green-600  sm:text-xl">
+                            voted
+                          </span>
+                        ) : (
+                          <Button
+                            gradientDuoTone="pinkToOrange"
+                            className="hover:opacity-70"
+                            onClick={() => {
+                              setShowModal(true);
+                              setCandidateID(candidate._id);
+                            }}
+                          >
+                            Vote
+                          </Button>
+                        )}
+                      </>
                     )}
                   </Table.Cell>
                 </Table.Row>

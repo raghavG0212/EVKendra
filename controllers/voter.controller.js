@@ -35,9 +35,6 @@ const signup = async (req, res) => {
         .status(400)
         .json({ message: "Voter should be at least 18 years old" });
     }
-    if (nationality !== "Indian") {
-      return res.status(400).json({ message: "Nationality must be Indian" });
-    }
     if (password.length < 8) {
       return res
         .status(400)
@@ -104,6 +101,7 @@ const login = async (req, res) => {
         dob: voter.dob,
         phoneNo: voter.phoneNo,
         voteStatus: voter.voteStatus,
+        nationality: voter.nationality,
       },
     });
   } catch (err) {
@@ -139,6 +137,12 @@ const voteExecutor = async (req, res) => {
       return res
         .status(400)
         .json({ message: "You have already voted in this election." });
+    }
+
+    if(voter.nationality!=="Indian"){
+       return res
+         .status(400)
+         .json({ message: "Nationality must be Indian" });
     }
     candidate.votes += 1;
     await election.save();
@@ -187,6 +191,44 @@ const getVoter = async (req, res) => {
   }
 };
 
+const updateVoter = async(req,res)=>{
+  const {id} = req.params;
+  const { name, phoneNo, aadharNo, nationality } = req.body;
+  try{
+    const voter = await VoterModel.findById(id);
+    if(!voter){
+       return res.status(400).json({ message: "Voter not found" });
+    }
+    voter.name = name || voter.name;
+    voter.phoneNo = phoneNo || voter.phoneNo;
+    voter.aadharNo = aadharNo || voter.aadharNo;
+    voter.nationality = nationality || voter.nationality;
+    await voter.save();
+    const { password: _, voteStatus: __, ...filteredVoter } = voter._doc;
+    res.status(200).json({
+      message: "Details updated successfully",
+      filteredVoter,
+    });
+  }
+  catch(err){
+    res.status(500).json({ message: "Server error", error: err.message });
+  }
+}
+
+const getAll= async(req,res)=>{
+  try{
+    const voters = await VoterModel.find();
+     const filteredVoters = voters.map((voter) => {
+       const { password: _, voteStatus: __, ...rest } = voter._doc;
+       return rest;
+     });
+    res.status(200).json(filteredVoters);
+  }
+  catch(err){
+    res.status(500).json({message: "Server error", error:err.message});
+  }
+}
+
 const countVoters = async (req, res) => {
   try {
     const voterCount = await VoterModel.countDocuments();
@@ -227,7 +269,7 @@ const countVotersPerMonth = async (req, res) => {
   }
 };
 
-module.exports = { signup, login, voteExecutor, getVoter, countVoters ,countVotersPerMonth};
+module.exports = { signup, login, voteExecutor, getVoter ,updateVoter , getAll, countVoters ,countVotersPerMonth};
 
 
 // dummy data 
