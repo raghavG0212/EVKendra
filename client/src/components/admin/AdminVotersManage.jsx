@@ -368,12 +368,14 @@ export default function AdminVotersManage() {
               </div>
               <Select
                 id="nationality"
+                value={nationality}
                 onChange={(e) => setNationality(e.target.value)}
               >
                 <option disabled>Select your nationality</option>
                 <option value="Indian">Indian</option>
                 <option value="American">American</option>
                 <option value="British">British</option>
+                <option value="Others">Others</option>
               </Select>
             </div>
             <div className="flex mt-10 space-x-3">
