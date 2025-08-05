@@ -13,6 +13,7 @@ import { useEffect, useState } from "react";
 import { IoMdAddCircle } from "react-icons/io";
 import { FaArrowRightLong } from "react-icons/fa6";
 import { MdEdit } from "react-icons/md";
+import { GoSearch } from "react-icons/go";
 import { toast } from "react-toastify";
 import Loader from "../Loader";
 
@@ -32,8 +33,11 @@ export default function AdminVotersManage() {
   const [createdAtFilter, setCreatedAtFilter] = useState("Any");
   const [fromDate, setFromDate] = useState("");
   const [toDate, setToDate] = useState("");
+  const [search,setSearch]= useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const votersPerPage = 10;
+
+  console.log(search);
 
   useEffect(() => {
     const fetchVoters = async () => {
@@ -67,6 +71,12 @@ export default function AdminVotersManage() {
     }
     if (fromDate && new Date(createdAt) < new Date(fromDate)) return false;
     if (toDate && new Date(createdAt) > new Date(toDate)) return false;
+
+    const searchTerm = search.toLowerCase();
+    const matchesSearch =
+      voter.name.toLowerCase().includes(searchTerm) ||
+      voter.voterID.toLowerCase().includes(searchTerm);
+    if (searchTerm && !matchesSearch) return false;
     return true;
   });
 
@@ -122,18 +132,29 @@ export default function AdminVotersManage() {
             Manage voters and their data here. They can't be deleted.{" "}
           </span>
         </div>
+        {/* small screen search */}
+        <div className={`lg:hidden mt-6 w-[50%] mb-2`}>
+          <TextInput
+            id="search"
+            type="text"
+            placeholder="Search Name or Voter ID"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            icon={GoSearch}
+          />
+        </div>
         <div className="flex justify-between items-end">
           {/* filter */}
-          <div className="flex sm:space-x-10 mt-4 mb-6">
-            <div className="mt-[23px]">
+          <div className="flex sm:space-x-10 mt-1 mb-4">
+            <div>
               <Button
                 gradientMonochrome="cyan"
-                className="capitalize sm:px-3 "
+                className={`capitalize sm:px-3 mt-6`}
                 onClick={() => {
                   setShowFilters((prev) => !prev);
                 }}
               >
-                <div className="flex space-x-1 items-center">
+                <div className="flex space-x-1 items-center text-nowrap">
                   <h1>Add Filters</h1>
                   <span className="mt-0.5">
                     {showFilters ? <FaArrowRightLong /> : <IoMdAddCircle />}
@@ -142,7 +163,11 @@ export default function AdminVotersManage() {
               </Button>
             </div>
             <div className="flex flex-col">
-              <div className={`flex gap-2 ${!showFilters && "hidden"}`}>
+              <div
+                className={`grid grid-cols-2 sm:grid-cols-3 ml-4 sm:ml-0 gap-2 ${
+                  !showFilters && "hidden"
+                }`}
+              >
                 <div>
                   <h1 className="font-semibold">Age</h1>
                   <Select
@@ -175,7 +200,7 @@ export default function AdminVotersManage() {
                   </Select>
                 </div>
                 <div>
-                  <h1 className="font-semibold">Joined Period</h1>
+                  <h1 className="font-semibold text-nowrap">Joined Period</h1>
                   <Select
                     id="createdAt"
                     value={createdAtFilter}
@@ -217,7 +242,18 @@ export default function AdminVotersManage() {
               )}
             </div>
           </div>
-          <div className="flex overflow-x-auto sm:justify-center m-4">
+          {/* large-screen search */}
+          <div className="hidden lg:block lg:mr-8 xl:mr-0 mb-4 mt-1 w-[30%]">
+            <TextInput
+              id="search"
+              type="text"
+              placeholder="Search Name or Voter ID"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              icon={GoSearch}
+            />
+          </div>
+          <div className="sm:hidden xl:flex xl:mr-2 overflow-x-auto sm:justify-center mt-1 mb-4">
             <Pagination
               layout="navigation"
               currentPage={currentPage}
@@ -226,7 +262,6 @@ export default function AdminVotersManage() {
                 setCurrentPage(page);
                 window.scrollTo(0, 0);
               }}
-              showIcons
             />
           </div>
         </div>
@@ -296,7 +331,7 @@ export default function AdminVotersManage() {
         {/* pagination */}
         <div className="flex overflow-x-auto sm:justify-center my-10">
           <Pagination
-            layout="navigation"
+           
             currentPage={currentPage}
             totalPages={totalPages}
             onPageChange={(page) => {

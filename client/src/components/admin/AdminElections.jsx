@@ -347,7 +347,6 @@ export default function AdminElections() {
         </div>
         <div className="flex overflow-x-auto sm:justify-center my-10">
           <Pagination
-            layout="navigation"
             currentPage={currentPage}
             totalPages={totalPages}
             onPageChange={(page) => {

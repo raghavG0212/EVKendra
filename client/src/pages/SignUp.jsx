@@ -248,8 +248,9 @@ export default function Login() {
             <Button
               gradientDuoTone="purpleToBlue"
               type="submit"
-              disabled={loading}
+              disabled={loading || !reqMet}
               className="w-[100%]"
+
             >
               {loading ? (
                 <>
