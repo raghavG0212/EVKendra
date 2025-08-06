@@ -14,6 +14,7 @@ import { IoMdAddCircle } from "react-icons/io";
 import { FaArrowRightLong } from "react-icons/fa6";
 import { MdEdit } from "react-icons/md";
 import { GoSearch } from "react-icons/go";
+import { GrPowerReset } from "react-icons/gr";
 import { toast } from "react-toastify";
 import Loader from "../Loader";
 
@@ -33,11 +34,9 @@ export default function AdminVotersManage() {
   const [createdAtFilter, setCreatedAtFilter] = useState("Any");
   const [fromDate, setFromDate] = useState("");
   const [toDate, setToDate] = useState("");
-  const [search,setSearch]= useState("");
+  const [search, setSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const votersPerPage = 10;
-
-  console.log(search);
 
   useEffect(() => {
     const fetchVoters = async () => {
@@ -133,20 +132,23 @@ export default function AdminVotersManage() {
           </span>
         </div>
         {/* small screen search */}
-        <div className={`lg:hidden mt-6 w-[50%] mb-2`}>
+        <div className={`sm:hidden mt-6 w-[50%] mb-2`}>
           <TextInput
             id="search"
             type="text"
             placeholder="Search Name or Voter ID"
             value={search}
-            onChange={(e) => setSearch(e.target.value)}
+            onChange={(e) => {
+              setSearch(e.target.value);
+              setCurrentPage(1);
+            }}
             icon={GoSearch}
           />
         </div>
         <div className="flex justify-between items-end">
           {/* filter */}
           <div className="flex sm:space-x-10 mt-1 mb-4">
-            <div>
+            <div className="flex items-center gap-1">
               <Button
                 gradientMonochrome="cyan"
                 className={`capitalize sm:px-3 mt-6`}
@@ -161,10 +163,18 @@ export default function AdminVotersManage() {
                   </span>
                 </div>
               </Button>
+              <Button color="failure" className="mt-6" onClick={()=>{
+                setAgeFilter("Any");
+                setNationalityFilter("Any");
+                setCreatedAtFilter("Any");
+                setFromDate("");
+                setToDate("");
+                setShowFilters(false);
+              }}><GrPowerReset /></Button>
             </div>
             <div className="flex flex-col">
               <div
-                className={`grid grid-cols-2 sm:grid-cols-3 ml-4 sm:ml-0 gap-2 ${
+                className={`grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 ml-4 sm:ml-0 gap-2 ${
                   !showFilters && "hidden"
                 }`}
               >
@@ -172,6 +182,7 @@ export default function AdminVotersManage() {
                   <h1 className="font-semibold">Age</h1>
                   <Select
                     id="age"
+                    value={ageFilter}
                     onChange={(e) => {
                       setAgeFilter(e.target.value);
                       setCurrentPage(1);
@@ -187,6 +198,7 @@ export default function AdminVotersManage() {
                   <h1 className="font-semibold">Nationality</h1>
                   <Select
                     id="nationality"
+                    value={nationalityFilter}
                     onChange={(e) => {
                       setNationalityFilter(e.target.value);
                       setCurrentPage(1);
@@ -243,17 +255,20 @@ export default function AdminVotersManage() {
             </div>
           </div>
           {/* large-screen search */}
-          <div className="hidden lg:block lg:mr-8 xl:mr-0 mb-4 mt-1 w-[30%]">
+          <div className="hidden sm:block sm:mr-8 xl:mr-0 mb-4 mt-1 w-[30%]">
             <TextInput
               id="search"
               type="text"
               placeholder="Search Name or Voter ID"
               value={search}
-              onChange={(e) => setSearch(e.target.value)}
+              onChange={(e) => {
+                setSearch(e.target.value);
+                setCurrentPage(1);
+              }}
               icon={GoSearch}
             />
           </div>
-          <div className="sm:hidden xl:flex xl:mr-2 overflow-x-auto sm:justify-center mt-1 mb-4">
+          <div className="hidden xl:flex xl:mr-2 overflow-x-auto sm:justify-center mt-1 mb-4">
             <Pagination
               layout="navigation"
               currentPage={currentPage}
@@ -331,7 +346,6 @@ export default function AdminVotersManage() {
         {/* pagination */}
         <div className="flex overflow-x-auto sm:justify-center my-10">
           <Pagination
-           
             currentPage={currentPage}
             totalPages={totalPages}
             onPageChange={(page) => {
