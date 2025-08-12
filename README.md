@@ -100,8 +100,8 @@ graph TD
 
 1. **Clone Repository:** Clone the repository from GitHub and navigate to the project directory.
    ```bash
-   git clone https://github.com/raghavG0212/EVKendra.git
-   cd EVKendra
+   git clone https://github.com/raghavG0212/EVKendra-Online-Voting-System.git
+   cd EVKendra-Online-Voting-System
    ```
 
 2. **Install Dependencies:** Install the necessary Node.js packages for both the client and server.
